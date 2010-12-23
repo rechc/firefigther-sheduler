@@ -1,0 +1,22 @@
+/* 
+    Document   : lofin_style
+    Created on : 23.12.2010, 14:31:19
+    Author     : christian
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+body {
+    
+}
+
+#login {
+    background: url(../images/Login_Background2.png);
+    margin: auto;
+    text-align: center;
+}
