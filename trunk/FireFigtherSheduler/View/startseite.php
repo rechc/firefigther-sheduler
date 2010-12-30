@@ -26,33 +26,34 @@ include ("./Model/Includes/checkuser.php");
             </div>
             <div id="content">
                 <?php
-                    $section = array();
-                    $section['overview'] = 'overview.php';
-                    $section['link_2'] = 'overview_all.php';
-                    $section['link_3'] = 'users.php';
-                    $section['link_4'] = 'statistic.php';
-                    $section['logout'] = 'logout.php';
+                $section = array();
+                $section['overview'] = 'overview.php';
+                $section['link_2'] = 'overview_all.php';
+                $section['link_3'] = 'users.php';
+                $section['link_4'] = 'statistic.php';
+                $section['logout'] = 'logout.php';
 
-                    if (isset($_GET['section'])) {
-                        switch ($_GET['section']) {
-                            case 'overview': include('overview.php');
-                                break;
-                            case 'link_2': include('link_2.php');
-                                break;
-                            case 'link_3': include('link_3.php');
-                                break;
-                            case 'logout': header("Location:../Controller/Login/logout.php");;
-                                break;
-                        }
-                    } else {
-                        include('login_formular.php');
+                if (isset($_GET['section'])) {
+                    switch ($_GET['section']) {
+                        case 'overview': include('overview.php');
+                            break;
+                        case 'link_2': include('link_2.php');
+                            break;
+                        case 'link_3': include('link_3.php');
+                            break;
+                        case 'logout': header("Location:../Controller/Login/logout.php");
+                            ;
+                            break;
                     }
+                } else {
+                    include('login_formular.php');
+                }
                 ?>
             </div>
-
         </div>
+
         <div id="foot">
-           <a href="http://www.ff-riegelsberg.de/?page_id=30">Impressum</a>
+            <a href="http://www.ff-riegelsberg.de/?page_id=30">Impressum</a>
         </div>
 
     </body>
