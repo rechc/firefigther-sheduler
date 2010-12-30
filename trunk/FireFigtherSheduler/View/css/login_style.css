@@ -11,12 +11,43 @@
    Syntax recommendation http://www.w3.org/TR/REC-CSS2/
 */
 
-body {
-    
+body{
+
 }
 
 #login {
-    background: url(../images/Login_Background2.png);
-    margin: auto;
+    height: 480px;
+    width: auto;
+    background-image:url(../images/Login-Background2.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    margin: 20px;
     text-align: center;
 }
+
+#pos{
+    position: relative;
+    top: 120px;
+    left: 180px;
+    text-align: left;
+}
+
+#login-button{
+    height: 50px;
+    width: 70px;
+    font-weight: bold;
+    font-size:1em;
+}
+
+.input-field{
+    width: 150px;
+}
+
+.button{
+    position: relative;
+    top: 10px;
+    left: 0px;
+    text-align: left;
+}
+
+

@@ -26,30 +26,27 @@ include ("./Model/Includes/checkuser.php");
             </div>
             <div id="content">
                 <?php
-                $section = array();
-                $section['overview'] = 'overview.php';
-                $section['link_2'] = 'overview_all.php';
-                $section['link_3'] = 'users.php';
-                $section['link_4'] = 'statistic.php';
-                $section['logout'] = 'logout.php';
+                    $section = array();
+                    $section['overview'] = 'overview.php';
+                    $section['link_2'] = 'overview_all.php';
+                    $section['link_3'] = 'users.php';
+                    $section['link_4'] = 'statistic.php';
+                    $section['logout'] = 'logout.php';
 
-                if (isset($_GET['section'])) {
-                    switch ($_GET['section']) {
-                        case 'link_1': include('link_1.php');
-                            break;
-
-                        case 'link_2': include('link_2.php');
-                            break;
-
-                        case 'link_3': include('link_3.php');
-                            break;
-
-                        case 'logout': header("Location:../Controller/Login/logout.php");;
-                            break;
+                    if (isset($_GET['section'])) {
+                        switch ($_GET['section']) {
+                            case 'overview': include('overview.php');
+                                break;
+                            case 'link_2': include('link_2.php');
+                                break;
+                            case 'link_3': include('link_3.php');
+                                break;
+                            case 'logout': header("Location:../Controller/Login/logout.php");;
+                                break;
+                        }
+                    } else {
+                        include('login_formular.php');
                     }
-                } else {
-                    include('login_formular.php');
-                }
                 ?>
             </div>
 

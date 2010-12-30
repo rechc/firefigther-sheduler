@@ -6,6 +6,7 @@
     session_unset ();
     session_destroy ();
 
-    header("Location: ../../View/login_formular.php");
+    //header("Location: ../../View/login_formular.php");
+    header("Location: ../../View/startseite.php");
     ob_end_flush ();
 ?>
