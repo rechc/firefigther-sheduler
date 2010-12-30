@@ -29,7 +29,8 @@
         $_SESSION["user_nachname"] = $data["name"];
         $_SESSION["user_vorname"] = $data["vorname"];
 
-        header("Location: ../../Trash/intern.php");
+        header("Location: ../../View/startseite.php?section=overview");
+        //header("Location: ../../Trash/intern.php");
     } else {
         header("Location: ../../View/login_formular.php?fehler=1");
     }
