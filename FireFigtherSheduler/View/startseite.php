@@ -19,7 +19,7 @@ include ("./Model/Includes/checkuser.php");
                 <ul>
                     <li><a href="startseite.php?section=overview">Übersicht</a></li>
                     <li><a href="#">Komplett Übersicht</a></li>
-                    <li><a href="#">Benutzer</a></li>
+                    <li><a href="startseite.php?section=users">Benutzer</a></li>
                     <li><a href="#">Statistik</a></li>
                     <li><a href="startseite.php?section=logout">Logout</a></li>
                 </ul>
@@ -29,7 +29,7 @@ include ("./Model/Includes/checkuser.php");
                 $section = array();
                 $section['overview'] = 'overview.php';
                 $section['link_2'] = 'overview_all.php';
-                $section['link_3'] = 'users.php';
+                $section['users'] = 'users.php';
                 $section['link_4'] = 'statistic.php';
                 $section['logout'] = 'logout.php';
 

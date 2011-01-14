@@ -34,7 +34,9 @@ and open the template in the editor.
                 </table>
         </div>
         <div style="height:300px;width:250px;overflow:scroll;" id="userlist">
-            <div>Name <input type ="text"></div>
+           
+        </div>
+        <div>Name <input type ="text"></div>
             <div>Vorname: <input type ="text"></div>
             <div>E-Mail: <input type ="text"></div>
             <div>Geburtsdatum: <input type ="text"></div>
@@ -42,7 +44,6 @@ and open the template in the editor.
 
             <div><input type="button" name="ok"></div>
             <div><input type ="button" value="abbrechen" name="reset"</div>
-        </div>
 
         <?php
         // put your code here
