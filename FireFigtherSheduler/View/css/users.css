@@ -1,0 +1,32 @@
+/* 
+    Document   : users
+    Created on : 16.01.2011, 19:58:59
+    Author     : christian
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+root { 
+    display: block;
+}
+
+#userdata{
+    position: absolute;
+    top: 350px;
+    left: 580px;
+}
+
+#userlist{
+    position: relative;
+    left: 30px;
+    overflow:scroll;
+    width: 300px;
+    height: 580px;
+    border:1px solid #2F4F4F;
+}
+

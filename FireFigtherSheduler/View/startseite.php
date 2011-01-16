@@ -39,7 +39,7 @@ include ("./Model/Includes/checkuser.php");
                             break;
                         case 'link_2': include('link_2.php');
                             break;
-                        case 'link_3': include('link_3.php');
+                        case 'users': include('users.php');
                             break;
                         case 'logout': header("Location:../Controller/Login/logout.php");
                             ;

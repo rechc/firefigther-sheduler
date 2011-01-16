@@ -6,45 +6,50 @@ and open the template in the editor.
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title></title>
+        <title>FFS Benutzer</title>
+        <link rel="stylesheet" type="text/css" href="css/users.css" />
     </head>
     <body>
         <h1>Benutzer</h1>
-        <div style="height:500px;width:250px;overflow:scroll;" id="userlist">
+        <div id="userlist">
             <?php
-                include ("../../Model/Includes/dbConnector.php");
-                $sql = "SELECT email, name from user";
+                include ("../Model/Includes/dbConnector.php");
+
+                $sql = "SELECT email, name FROM user";
                 $adressen_query = mysql_query($sql)
-                                  or die("Anfrage nicht erfolgreich");
-                ?>
-                <table border = 2>
-                    <tr>
-                        <td>E-Mail</td>
-                        <td>Name</td>
-                    </tr>
-                 <?php
-                //Daten in Array lesen
+                                  or die("Anfrage nicht erfolgreich!");
+        
                 while ($adr = mysql_fetch_array($adressen_query)){
-                    echo "<tr>" .
-                            "<td>$adr[email]</td>" .
-                            "<td>$adr[name]</td>" .
-                        "</tr>";
+                    echo "<hr>";
+                    echo $adr[email] . "; " . $adr[name] . "<br>";
+                    echo "<hr>";
                 }
-                ?>
-                </table>
+            ?>
         </div>
-        <div style="height:300px;width:250px;overflow:scroll;" id="userlist">
-           
+        <div id="userdata">
+            <table border="0">
+                <tr>
+                    <td><div>Name: <input type ="text"></div></td>
+                    <td><div>Vorname: <input type ="text"></div></td>
+                </tr>
+                <tr>
+                    <td><div>E-Mail: <input type ="text"></div></td>
+                    <td><div>Geburtsdatum: <input type ="text"></div></td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <div>Geschlecht:
+                              männlisch <input type="radio" value="maennlisch" name="Geschlecht">
+                              weiblisch <input type="radio" value="weiblisch" name="Geschlecht">
+                         </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td><div><input type="button" value="Ok" name="ok"></div></td>
+                    <td><div><input type ="button" value="abbrechen" name="reset"</div></td>
+                </tr>
+            </table>
         </div>
-        <div>Name <input type ="text"></div>
-            <div>Vorname: <input type ="text"></div>
-            <div>E-Mail: <input type ="text"></div>
-            <div>Geburtsdatum: <input type ="text"></div>
-            <div>Geschlecht: <input type ="radio"></div>
-
-            <div><input type="button" name="ok"></div>
-            <div><input type ="button" value="abbrechen" name="reset"</div>
-
         <?php
         // put your code here
         ?>

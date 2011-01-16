@@ -13,7 +13,8 @@
 
     // echo "$sql<br>"; // zum Test wie Befehl geschrieben aussieht
 
-    $result = mysql_query($sql);
+    $result = mysql_query($sql)
+                 or die("Anfrage nicht erfolgreich!");;
 
     //Test
     //$anzahl = mysql_num_rows($adressen_query);
