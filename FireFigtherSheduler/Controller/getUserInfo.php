@@ -1,6 +1,9 @@
 <?php
-    if($_POST["userID"] == "")
+    if($_GET['userID'] == ""){
 	echo "ID is empty";
-    else
-	echo "you sent ID: ".$_POST["userID"];
+    } else {
+        $name = 'franz';
+	echo "you sent ID: " . $_GET['userID'];
+        
+    }
 ?>
