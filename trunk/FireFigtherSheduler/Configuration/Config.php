@@ -32,6 +32,58 @@ class Config {
         return 10;
     }
 
+    /**
+     * 
+     * max Zeitabstand zur letzten Einsatzübung
+     * @return Anzahl Tage
+     */
+    public static function last_assignment_course(){
+        return 356;
+    }
+
+    /**
+     *
+     * max Zeitabstand zum letzten Einsatz
+     * @return Anzahl Tage
+     */
+    public static function last_assignment(){
+        return 356;
+    }
+
+    /**
+     *
+     * max Zeitabstand zur letzten belastungsstrecke
+     * @return Anzahl Tage
+     */
+    public static function last_loading_track(){//uebersetzung ka....
+        return 356;
+    }
+
+    public static function g26_yellow_state(){
+        return 60;
+    }
+
+    public static function green(){
+        return 0;
+    }
+    public static function yellow(){
+        return 1;
+    }
+    public static function red(){
+        return 2;
+    }
+
+
+
+            /*Rot wenn
+G26.3 Untersuchung abgelaufen ODER
+Einsatz UND Einsatzübung älter als 365 Tage ODER
+Belastungsstrecke älter als 365 Tage*/
+
+    
+
+
+
     // --------- for db ---------
 
     /*    const mysqlhost="stud-i-pr2.htw-saarland.de"; // MySQL-Host angeben
@@ -61,6 +113,8 @@ class Config {
     public static function mysqlpwd(){
         return "g00gl3m4p5k1ll4";
     }
+
+
 
 
     

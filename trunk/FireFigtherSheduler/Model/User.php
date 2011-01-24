@@ -10,7 +10,7 @@ require_once('../Configuration/Config.php');
  * @version alpha
  * 
  */
-class User {
+class User { // TODO global gescheites fehlerhandling
 
     private $ID;
     private $email;
@@ -18,9 +18,12 @@ class User {
     private $name;
     private $vorname;
     private $gebDat;
-    private $lbz_ID; // ist nochmal was
+    private $lbz_ID; // ist nochmal was Leitbezirk ?
     private $agt; // ist nochmal was 
     private $rollen_ID;
+    //neu TODO implement
+    private $g26_objekt;
+
 
     /**
      * Standard Konstruktor
@@ -61,10 +64,13 @@ class User {
     }
 
 
+
     /**
      * get_user_by_login
      * Erfragt mittels Email und Password den Benutzer aus der DB
      * (ohne passwort Attribut zu liefern)
+     * @param <type> $email
+     * @param <type> $password
      * @return User-Objekt or NULL
      */
     public static function get_user_by_login($email, $password){
@@ -123,6 +129,11 @@ class User {
      */
     public function get_warning_status(){
         // TODO implement
+        /*Rot wenn
+G26.3 Untersuchung abgelaufen ODER
+Einsatz UND Einsatzübung älter als 365 Tage ODER
+Belastungsstrecke älter als 365 Tage*/
+  
         return "green";
     }
 
@@ -301,8 +312,6 @@ function testusr(){
     
     $user->setName("Lan");
     $user->save_without_pw();
-
-
 
 }
 
