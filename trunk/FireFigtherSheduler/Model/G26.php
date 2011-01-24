@@ -11,7 +11,7 @@ require_once('../Configuration/Config.php');
  * Description of G26
  *
  * @author awagen
- * @version alpha , not tested
+ * @version beta
  */
 class G26 {
 
@@ -106,6 +106,17 @@ class G26 {
          }
      }
 
+
+     /**
+      * 
+      */
+     public function delete(){
+         $sql = "DELETE FROM g26
+             WHERE ID = '$this->ID'";
+         $dbConnector = DbConnector::getInstance();
+         $result = $dbConnector->execute_sql($sql);
+     }
+
     // ---------------- Down setter and getter ----------------
     
     public function getID() {
@@ -150,7 +161,7 @@ function g26test(){
     $g26->get_warning_status();
 
 }
-g26test();
+//g26test();
 
 
 ?>
