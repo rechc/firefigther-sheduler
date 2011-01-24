@@ -1,4 +1,5 @@
 <?php
+require_once('../Configuration/Config.php');
 
 /**
  * Description of DbConnector
@@ -8,35 +9,29 @@
  */
 class DbConnector {
  
-    const mysqlhost="stud-i-pr2.htw-saarland.de"; // MySQL-Host angeben
-    const mysqldb="FFS"; // Gewuenschte Datenbank angeben
-    const mysqluser="htwmaps"; // MySQL-User angeben
-    const mysqlpwd="g00gl3m4p5k1ll4"; // Passwort angeben
- 
-    /*
-    var $mysqlhost="feuerwehr-saar.de"; // MySQL-Host angeben
-    var $mysqldb="db1057229-2"; // Gewuenschte Datenbank angeben
-    var $mysqluser="dbu1057229"; // MySQL-User angeben
-    var $mysqlpwd="h0m3b0y"; // Passwort angeben
-    */
     private static $singletonInstance = null;
     private $connectionid;
+    
 
     /**
      * Konstruktor
      * legt eine neue Verbindung an
+     * private wegen Singelton
      */
     private function __construct(){
         // nice to have : singelton
         // Datenbankverbindung aufbauen
-        $this->connectionid = mysql_connect(DbConnector::mysqlhost,
-                DbConnector::mysqluser, DbConnector::mysqlpwd)
+        $this->connectionid = mysql_connect(Config::mysqlhost(),
+                Config::mysqluser(), Config::mysqlpwd())
                 or die (mysql_error());
-        mysql_select_db(DbConnector::mysqldb) or die(mysql_error()); 
+        mysql_select_db(Config::mysqldb()) or die(mysql_error());
     }
 
+
     /**
-     * Singleton
+     * getInstance
+     * liefert eine Instanz vom DbConnector (Singleton)
+     * @return DbConnector-Objekt
      */
     public static function getInstance(){
         if(self::$singletonInstance == null)
@@ -45,7 +40,6 @@ class DbConnector {
       }
       return self::$singletonInstance;
     }
-
 
 
     /**
@@ -59,6 +53,7 @@ class DbConnector {
         return $result;
     }
 
+
     /**
      * explizit_shutdown
      * schließt die DB Verbindung
@@ -68,7 +63,6 @@ class DbConnector {
     public function explizit_shutdown(){
         mysql_close( $this->connectionid );
     }
-
 
 }
 // schnell  Test:

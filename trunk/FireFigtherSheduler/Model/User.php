@@ -1,5 +1,7 @@
 <?php
-include('DbConnector.php');
+require_once('DbConnector.php');
+require_once('../Configuration/Config.php');
+
 
 /**
  * Description of User
@@ -24,6 +26,7 @@ class User {
      * Standard Konstruktor
      */
     public function __construct(){}
+    
 
     /**
      * save_without_pw
@@ -78,7 +81,7 @@ class User {
         if (mysql_num_rows($result) > 0) {
             // Benutzerdaten in ein Array auslesen.
             $data = mysql_fetch_array($result);
-            
+
             $user = new User();
             $user->setID($data["ID"]);
             $user->setEmail($data["email"]);
@@ -129,7 +132,7 @@ class User {
      * @return boolean
      */
     public function is_admin(){
-        if ($this->rollen_ID == 50){ //uncool 50 direkt reinzuschreiben
+        if ($this->rollen_ID == Config::admin_role_id()){ 
             return true;
         }
         return false;
@@ -141,7 +144,7 @@ class User {
      * @return boolean
      */
     public function is_agw(){
-        if ($this->rollen_ID == 40){ 
+        if ($this->rollen_ID == Config::agw_role_id()){
             return true;
         }
         return false;
@@ -153,7 +156,7 @@ class User {
      * @return boolean
      */
     public function is_manager(){
-        if ($this->rollen_ID == 30){ 
+        if ($this->rollen_ID == Config::manager_role_id()){
             return true;
         }
         return false;
@@ -165,12 +168,44 @@ class User {
      * @return boolean
      */
     public function is_member(){
-        if ($this->rollen_ID == 10){
+        if ($this->rollen_ID == Config::member_role_id()){
             return true;
         }
         return false;
     }
 
+    
+    /**
+     * get_userarray_for_manager_view
+     * Liefert ein Array aller User (ohne passwort)
+     * @return User-ArrayObject
+     */
+    public static function get_userarray_for_manager_view(){
+        //ist glaub net so ganz sauber dass die methode in user ist .... bitte um statement
+         $user_array=new ArrayObject();
+
+         $sql = "SELECT ID, email, name, vorname, gebDat, lbz_ID, agt, rollen_ID
+             FROM user";
+
+         $dbConnector = DbConnector::getInstance();
+         $result = $dbConnector->execute_sql($sql);
+
+         while($row = mysql_fetch_array($result)){ //sequentielles durchgehen der zeilen
+
+            $user = new User();
+            $user->setID($row["ID"]);
+            $user->setEmail($row["email"]);
+            $user->setName($row["name"]);
+            $user->setVorname($row["vorname"]);
+            $user->setGebDat($row["gebDat"]);
+            $user->setLbz_ID($row["lbz_ID"]);
+            $user->setAgt($row["agt"]);
+            $user->setRollen_ID($row["rollen_ID"]);
+
+            $user_array->append($user);
+         }
+         return $user_array;
+     }
 
 
     // ---------------- Down setter and getter ----------------
@@ -182,7 +217,7 @@ class User {
         return $this->ID;
     }
 
-    private function setID($ID) {
+    public function setID($ID) {
         $this->ID = $ID;
     }
 
@@ -282,9 +317,16 @@ function testcreate(){
     $user->create_db_entry();
 }
 
-testusr();
- //testcreate();
+function testusrlist(){
+    $user_array=  User::get_userarray_for_manager_view();
+    foreach($user_array as $user){
+        echo $user->getName(),"<br />";
+    }
+}
 
+//testusr();
+ //testcreate();
+testusrlist();
 
 
 ?>
