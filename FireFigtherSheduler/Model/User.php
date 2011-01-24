@@ -1,6 +1,7 @@
 <?php
 require_once('DbConnector.php');
 require_once('../Configuration/Config.php');
+require_once('G26.php');
 
 
 /**
@@ -10,7 +11,7 @@ require_once('../Configuration/Config.php');
  * @version alpha
  * 
  */
-class User { // TODO global gescheites fehlerhandling
+class User { // TODO global gescheites fehlerhandling dazu rückgaben von mysql_query() noch anschauen, bzw noch typprüfungen "bool is_a ( object $object , string $class_name )"
 
     private $ID;
     private $email;
@@ -46,6 +47,8 @@ class User { // TODO global gescheites fehlerhandling
 
         $dbConnector = DbConnector::getInstance();
         $result = $dbConnector->execute_sql($sql);
+
+
     }
 
 
@@ -98,6 +101,9 @@ class User { // TODO global gescheites fehlerhandling
             $user->setLbz_ID($data["lbz_ID"]);
             $user->setAgt($data["agt"]);
             $user->setRollen_ID($data["rollen_ID"]);
+
+            //folgend aus anderen tabellen
+            $user->setG26_objekt(G26::load($data["ID"]));
 
             return $user;
         }else {
@@ -221,79 +227,93 @@ Belastungsstrecke älter als 365 Tage*/
 
     // ---------------- Down setter and getter ----------------
     // auto über alt+einfg  // geht anscheind nicht übers kontextmenü wie bei
-    // java projekten
+    // java projekten, ps: plz stil beibehalten setter dann getter 
 
     // TODO validierung feldlänge , numerical etc.
-    public function getID() {
-        return $this->ID;
-    }
 
     public function setID($ID) {
         $this->ID = $ID;
-    }
-
-    public function getEmail() {
-        return $this->email;
     }
 
     public function setEmail($email) {
         $this->email = $email;
     }
 
-    public function getPassword() {
-        return $this->password;
-    }
-
     public function setPassword($password) {
         $this->password = $password;
-    }
-
-    public function getName() {
-        return $this->name;
     }
 
     public function setName($name) {
         $this->name = $name;
     }
 
-    public function getVorname() {
-        return $this->vorname;
-    }
-
     public function setVorname($vorname) {
         $this->vorname = $vorname;
-    }
-
-    public function getGebDat() {
-        return $this->gebDat;
     }
 
     public function setGebDat($gebDat) {
         $this->gebDat = $gebDat;
     }
 
-    public function getLbz_ID() {
-        return $this->lbz_ID;
-    }
-
     public function setLbz_ID($lbz_ID) {
         $this->lbz_ID = $lbz_ID;
-    }
-
-    public function getAgt() {
-        return $this->agt;
     }
 
     public function setAgt($agt) {
         $this->agt = $agt;
     }
 
+    public function setRollen_ID($rollen_ID) {
+        $this->rollen_ID = $rollen_ID;
+    }
+
+    public function setG26_objekt($g26_objekt) {
+        if (is_a($g26_objekt, 'G26')){
+            $this->g26_objekt = $g26_objekt;
+        }else{
+            //fehlerhandling
+        }
+        
+    }
+
+    public function getID() {
+        return $this->ID;
+    }
+
+    public function getEmail() {
+        return $this->email;
+    }
+
+    public function getPassword() {
+        return $this->password;
+    }
+
+    public function getName() {
+        return $this->name;
+    }
+
+    public function getVorname() {
+        return $this->vorname;
+    }
+
+    public function getGebDat() {
+        return $this->gebDat;
+    }
+
+    public function getLbz_ID() {
+        return $this->lbz_ID;
+    }
+
+    public function getAgt() {
+        return $this->agt;
+    }
+
     public function getRollen_ID() {
         return $this->rollen_ID;
     }
 
-    public function setRollen_ID($rollen_ID) {
-        $this->rollen_ID = $rollen_ID;
+    public function getG26_objekt() {
+        return $this->g26_objekt;
     }
 
 }
@@ -332,10 +352,23 @@ function testusrlist(){
         echo $user->getName(),"<br />";
     }
 }
+function testusraddg26(){
+    $email = "t.lana@ff-riegelsberg.de";
+    $password = 4711;
 
+    $user = User::get_user_by_login($email, $password);
+    if ($user->getG26_objekt() != NULL){
+        echo "!=null";
+        echo '<br>';
+        echo $user->getG26_objekt()->getGueltigBis();//->delete(); <- tested
+    }else{echo "null";}
+    
+}
 //testusr();
  //testcreate();
-testusrlist();
+//testusrlist();
+
+ //testusraddg26();
 
 
 ?>
