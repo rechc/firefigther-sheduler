@@ -2,8 +2,9 @@
 
 /**
  * Description of DbConnector
- * Version 0.1 not tested
+ *
  * @author awagen
+ * @version beta
  */
 class DbConnector {
  
@@ -18,18 +19,34 @@ class DbConnector {
     var $mysqluser="dbu1057229"; // MySQL-User angeben
     var $mysqlpwd="h0m3b0y"; // Passwort angeben
     */
-    var $connectionid;
+    private static $singletonInstance = null;
+    private $connectionid;
 
     /**
      * Konstruktor
+     * legt eine neue Verbindung an
      */
-    public function __construct(){
+    private function __construct(){
+        // nice to have : singelton
         // Datenbankverbindung aufbauen
         $this->connectionid = mysql_connect(DbConnector::mysqlhost,
                 DbConnector::mysqluser, DbConnector::mysqlpwd)
                 or die (mysql_error());
         mysql_select_db(DbConnector::mysqldb) or die(mysql_error()); 
     }
+
+    /**
+     * Singleton
+     */
+    public static function getInstance(){
+        if(self::$singletonInstance == null)
+      {
+         self::$singletonInstance = new DbConnector();
+      }
+      return self::$singletonInstance;
+    }
+
+
 
     /**
      * execute_sql
