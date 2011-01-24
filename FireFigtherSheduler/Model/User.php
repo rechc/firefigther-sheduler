@@ -1,14 +1,12 @@
 <?php
 include('DbConnector.php');
-/* 
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 /**
  * Description of User
  *
  * @author awagen
+ * @version alpha
+ * 
  */
 class User {
 
@@ -18,37 +16,63 @@ class User {
     private $name;
     private $vorname;
     private $gebDat;
-    private $lbz_ID;
-    private $agt;
+    private $lbz_ID; // ist nochmal was
+    private $agt; // ist nochmal was 
     private $rollen_ID;
 
     /**
-     * 
+     * Standard Konstruktor
      */
     public function __construct(){}
 
     /**
-     *
+     * save_without_pw
+     * speichert Änderungen am User Objekt, ohne Berücksichtigung des Passworts
      */
-    function save_without_pw(){}
+    public function save_without_pw(){
+        //kann fehlschlagen falls benutzer gelöscht wurde -> handling
+        $sql = "UPDATE user
+            SET email = '$this->email', name = '$this->name',
+                vorname = '$this->vorname', gebDat = '$this->gebDat',
+                lbz_ID = '$this->lbz_ID', agt = '$this->agt',
+                rollen_ID = '$this->rollen_ID'
+            WHERE ID = '$this->ID'";
+
+        $dbConnector = DbConnector::getInstance();
+        $result = $dbConnector->execute_sql($sql);
+    }
+
 
     /**
-     *
+     * save_pw
+     * speichert ein neues Passwort
      */
-    function save_pw(){}
+    public function save_pw(){
+         //kann fehlschlagen falls benutzer gelöscht wurde -> handling
+        $sql = "UPDATE user
+            SET password = '$this->password'
+            WHERE ID = '$this->ID'";
+
+        $dbConnector = DbConnector::getInstance();
+        $result = $dbConnector->execute_sql($sql);
+    }
+
 
     /**
-     * 
+     * get_user_by_login
+     * Erfragt mittels Email und Password den Benutzer aus der DB
+     * (ohne passwort Attribut zu liefern)
+     * @return User-Objekt or NULL
      */
     public static function get_user_by_login($email, $password){
         // TODO validierung auf injections 
-        $sql = "SELECT ID, email, name, vorname " .
+        $sql = "SELECT ID, email, name, vorname, gebDat, lbz_ID, agt, rollen_ID " .
             "FROM user " .
             "WHERE ( email like '" . $email .
             "' ) AND ( " .
             "passwort = '" . $password . "')";
         
-        $dbConnector = new DbConnector();
+        $dbConnector = DbConnector::getInstance();
         $result = $dbConnector->execute_sql($sql);
 
         if (mysql_num_rows($result) > 0) {
@@ -58,7 +82,7 @@ class User {
             $user = new User();
             $user->setID($data["ID"]);
             $user->setEmail($data["email"]);
-            $user->setPassword($data["password"]);
+           // $user->setPassword($data["password"]);
             $user->setName($data["name"]);
             $user->setVorname($data["vorname"]);
             $user->setGebDat($data["gebDat"]);
@@ -72,11 +96,80 @@ class User {
         }
     }
 
+
     /**
+     * create_db_entry
+     * erstellt einen neuen Eintrag mit dem aktuellen Benutzer
      *
      */
-    function get_warning_status(){}
+    public function create_db_entry(){
+        //TODO missing lbz und agt, festellung kein uniqueness der email
+        $sql= "INSERT INTO user ( name, vorname, email,  passwort , rollen_ID,
+            gebDat)
+        VALUES ( '$this->name', '$this->vorname', '$this->email',
+                '$this->password', '$this->rollen_ID', '$this->gebDat' )";
 
+        $dbConnector = DbConnector::getInstance();
+        $result = $dbConnector->execute_sql($sql);
+    }
+
+
+    /**
+     * get_warning_status
+     * @return a String-Value: red, yellow or green
+     */
+    public function get_warning_status(){
+        // TODO implement
+        return "green";
+    }
+
+
+    /**
+     * is_admin
+     * @return boolean
+     */
+    public function is_admin(){
+        if ($this->rollen_ID == 50){ //uncool 50 direkt reinzuschreiben
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * is_agw
+     * @return boolean
+     */
+    public function is_agw(){
+        if ($this->rollen_ID == 40){ 
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * is_manager
+     * @return boolean
+     */
+    public function is_manager(){
+        if ($this->rollen_ID == 30){ 
+            return true;
+        }
+        return false;
+    }
+    
+
+    /**
+     * is_member
+     * @return boolean
+     */
+    public function is_member(){
+        if ($this->rollen_ID == 10){
+            return true;
+        }
+        return false;
+    }
 
 
 
@@ -89,7 +182,7 @@ class User {
         return $this->ID;
     }
 
-    public function setID($ID) {
+    private function setID($ID) {
         $this->ID = $ID;
     }
 
@@ -170,10 +263,27 @@ function testusr(){
     echo $user->getEmail();
     echo $user->getName();
     echo $user->getVorname();
+    
+    $user->setName("Lan");
+    $user->save_without_pw();
+
+
+
 }
 
-//testusr();
+function testcreate(){
+    $user = new User;
+    $user->setEmail('emai@email.de');
+    $user->setGebDat("2001-10-10");
+    $user->setName('name');
+    $user->setPassword("passwd");
+    $user->setVorname("vorname");
+    $user->setRollen_ID(10);
+    $user->create_db_entry();
+}
 
+testusr();
+ //testcreate();
 
 
 
