@@ -10,6 +10,15 @@
  * @author awagen
  */
 class Uebung {
-    //put your code here
+
+    /**
+     * Standard Konstruktor
+     */
+    public function __construct(){}
+
+    public static function load();
+    public function save(){}
+    public function create_db_entry(){}
+    public function delete_if_not_referenced(){}
 }
 ?>
