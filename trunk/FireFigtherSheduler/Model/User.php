@@ -7,11 +7,12 @@ require_once('G26.php');
 /**
  * Description of User
  *
- * @author awagen
+ * @author Warken Andreas
  * @version alpha
  * 
  */
 class User { // TODO global gescheites fehlerhandling dazu rückgaben von mysql_query() noch anschauen, bzw noch typprüfungen "bool is_a ( object $object , string $class_name )"
+    //dynamisches nachladen der objekt variablen,welche selten gebraucht werden, bei get anfrage ?
 
     private $ID;
     private $email;
@@ -19,21 +20,13 @@ class User { // TODO global gescheites fehlerhandling dazu rückgaben von mysql_
     private $name;
     private $vorname;
     private $gebDat;
-    private $lbz_ID; // ist nochmal was Leitbezirk ?
-    private $agt; // ist nochmal was 
+    /** LBZ ist Loeschbezirk. */
+    private $lbz_ID;
+    /** Agt ist Atemschutzgeraetetraeger. (boolean) */
+    private $agt; 
     private $rollen_ID;
-    //neu TODO implement
     private $g26_objekt;
-    /* LBZ ist Loeschbezirk.
-In unserem Fall ist das
-Riegelsberg I - Riegelsberg und
-Riegelsberg 2 - Walpershofen
 
-Agt ist Atemschutzgeraetetraeger.
-Das Feld dient zum Unterscheiden ob der Typ ueberhaupt Atemschutz anziehen darf oder noch will.
-*//*G26.3 ist normalerweise alle 3 jahre faellig.
-Der Arzt kann aber auch andere Daten festlegen, wie er es fuer richtig haelt.
-Du bekommst also bei der Untersuchung eine Art haltbarkeitsdatum verpasst.*/
 
     /**
      * Standard Konstruktor
@@ -56,8 +49,6 @@ Du bekommst also bei der Untersuchung eine Art haltbarkeitsdatum verpasst.*/
 
         $dbConnector = DbConnector::getInstance();
         $result = $dbConnector->execute_sql($sql);
-
-
     }
 
 
@@ -74,7 +65,6 @@ Du bekommst also bei der Untersuchung eine Art haltbarkeitsdatum verpasst.*/
         $dbConnector = DbConnector::getInstance();
         $result = $dbConnector->execute_sql($sql);
     }
-
 
 
     /**
@@ -281,8 +271,7 @@ Belastungsstrecke älter als 365 Tage*/
             $this->g26_objekt = $g26_objekt;
         }else{
             //fehlerhandling
-        }
-        
+        }   
     }
 
     public function getID() {
