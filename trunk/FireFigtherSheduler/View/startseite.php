@@ -29,7 +29,7 @@ include ("./Model/Includes/checkuser.php");
                 $section = array();
                 $section['overview'] = 'overview.php';
                 $section['link_2'] = 'overview_all.php';
-                $section['users'] = 'users.php';
+                $section['users'] = 'user_manager.php';
                 $section['link_4'] = 'statistic.php';
                 $section['logout'] = 'logout.php';
 
@@ -39,7 +39,7 @@ include ("./Model/Includes/checkuser.php");
                             break;
                         case 'link_2': include('link_2.php');
                             break;
-                        case 'users': include('users.php');
+                        case 'users': include('user_manager.php');
                             break;
                         case 'logout': ;//header("Location:../Controller/Login/logout.php");
                             ;
