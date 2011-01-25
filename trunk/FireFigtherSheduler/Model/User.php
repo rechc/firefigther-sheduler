@@ -24,7 +24,16 @@ class User { // TODO global gescheites fehlerhandling dazu rückgaben von mysql_
     private $rollen_ID;
     //neu TODO implement
     private $g26_objekt;
+    /* LBZ ist Loeschbezirk.
+In unserem Fall ist das
+Riegelsberg I - Riegelsberg und
+Riegelsberg 2 - Walpershofen
 
+Agt ist Atemschutzgeraetetraeger.
+Das Feld dient zum Unterscheiden ob der Typ ueberhaupt Atemschutz anziehen darf oder noch will.
+*//*G26.3 ist normalerweise alle 3 jahre faellig.
+Der Arzt kann aber auch andere Daten festlegen, wie er es fuer richtig haelt.
+Du bekommst also bei der Untersuchung eine Art haltbarkeitsdatum verpasst.*/
 
     /**
      * Standard Konstruktor
@@ -317,58 +326,5 @@ Belastungsstrecke älter als 365 Tage*/
     }
 
 }
-
-//schnell tests
-function testusr(){
-    $email = "t.lana@ff-riegelsberg.de";
-    $password = 4711;
-
-    $user = User::get_user_by_login($email, $password);
-
-
-    echo $user->getEmail();
-    echo $user->getName();
-    echo $user->getVorname();
-    
-    $user->setName("Lan");
-    $user->save_without_pw();
-
-}
-
-function testcreate(){
-    $user = new User;
-    $user->setEmail('emai@email.de');
-    $user->setGebDat("2001-10-10");
-    $user->setName('name');
-    $user->setPassword("passwd");
-    $user->setVorname("vorname");
-    $user->setRollen_ID(10);
-    $user->create_db_entry();
-}
-
-function testusrlist(){
-    $user_array=  User::get_userarray_for_manager_view();
-    foreach($user_array as $user){
-        echo $user->getName(),"<br />";
-    }
-}
-function testusraddg26(){
-    $email = "t.lana@ff-riegelsberg.de";
-    $password = 4711;
-
-    $user = User::get_user_by_login($email, $password);
-    if ($user->getG26_objekt() != NULL){
-        echo "!=null";
-        echo '<br>';
-        echo $user->getG26_objekt()->getGueltigBis();//->delete(); <- tested
-    }else{echo "null";}
-    
-}
-//testusr();
- //testcreate();
-//testusrlist();
-
- //testusraddg26();
-
 
 ?>
