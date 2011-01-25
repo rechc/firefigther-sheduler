@@ -8,8 +8,8 @@
             "FROM user " .
             "WHERE ( email like '" . $_REQUEST["Mail"] .
             "' ) AND ( " .
-            //"Password = '" .  md5($_REQUEST["Pwd"]) . "')";
-            "name = '" . $_REQUEST["Pwd"] . "')";
+            "Password = '" .  md5($_REQUEST["Pwd"]) . "')";
+            //"name = '" . $_REQUEST["Pwd"] . "')";
 
     // echo "$sql<br>"; // zum Test wie Befehl geschrieben aussieht
 

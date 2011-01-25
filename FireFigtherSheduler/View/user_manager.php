@@ -71,19 +71,23 @@
         <h1>Benutzer</h1>
         <div id="userlist">
             <?php
-                include ("../Model/Includes/dbConnector.php");
+                require_once('../Model/User_Manager/Userlist.php');
+                $userlist = new Userlist();
+                echo $userlist;
 
-                $sql = "SELECT id, email, name FROM user";
-                $adressen_query = mysql_query($sql)
-                                  or die("Anfrage nicht erfolgreich!");
-
-                while ($adr = mysql_fetch_array($adressen_query)){
-                    echo "<hr>";
-                    echo "<a href='#' onClick='sendUserInfoRequest(" . $adr[id] . ")'>" . 
-                            $adr[email] . "; " . $adr[name] . "<br>".
-                        "</a>";
-                    echo "<hr>";
-                }
+//                include ("../Model/Includes/dbConnector.php");
+//
+//                $sql = "SELECT id, email, name FROM user";
+//                $adressen_query = mysql_query($sql)
+//                                  or die("Anfrage nicht erfolgreich!");
+//
+//                while ($adr = mysql_fetch_array($adressen_query)){
+//                    echo "<hr>";
+//                    echo "<a href='#' onClick='sendUserInfoRequest(" . $adr[id] . ")'>" .
+//                            $adr[email] . "; " . $adr[name] . "<br>".
+//                        "</a>";
+//                    echo "<hr>";
+//                }
             ?>
         </div>
         <div id="userdata">
@@ -111,7 +115,6 @@
                     </tr>
                 </table>
             </form>
-                <div id='ResponseDiv'></div>
         </div>
     </body>
 </html>
