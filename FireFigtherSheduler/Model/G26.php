@@ -20,7 +20,9 @@ class G26 {
     private $datum;
     private $gueltigBis;
     //put your code here
-
+/*//*G26.3 ist normalerweise alle 3 jahre faellig.
+Der Arzt kann aber auch andere Daten festlegen, wie er es fuer richtig haelt.
+Du bekommst also bei der Untersuchung eine Art haltbarkeitsdatum verpasst.*/
     /**
      * Standard Konstruktor
      */

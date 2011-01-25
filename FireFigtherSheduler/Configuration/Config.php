@@ -60,7 +60,7 @@ class Config {
     }
 
     public static function g26_yellow_state(){
-        return 60;
+        return 60;//vorläufig normale zeit 1068 Tage = 3 JAhre
     }
 
     public static function green(){
