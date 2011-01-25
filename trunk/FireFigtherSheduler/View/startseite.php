@@ -41,7 +41,7 @@ include ("./Model/Includes/checkuser.php");
                             break;
                         case 'users': include('users.php');
                             break;
-                        case 'logout': header("Location:../Controller/Login/logout.php");
+                        case 'logout': ;//header("Location:../Controller/Login/logout.php");
                             ;
                             break;
                     }
