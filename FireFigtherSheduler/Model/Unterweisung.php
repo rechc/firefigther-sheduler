@@ -46,7 +46,13 @@ class Unterweisung {
             return NULL;
         }   
     }
+    
+    /**
+     *
+     */
+    public function save(){}
 
+    public function create_db_entry(){}
 
     /**
      *
@@ -54,10 +60,7 @@ class Unterweisung {
     public function delete_if_not_referenced(){}
 
 
-    /**
-     *
-     */
-    public function save(){}
+    
 
     
     /**

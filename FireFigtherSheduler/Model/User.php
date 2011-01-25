@@ -33,6 +33,50 @@ class User { // TODO global gescheites fehlerhandling dazu rückgaben von mysql_
      */
     public function __construct(){}
     
+    
+    /**
+     * get_user_by_login
+     * Erfragt mittels Email und Password den Benutzer aus der DB
+     * (ohne passwort Attribut zu liefern)
+     * @param <type> $email
+     * @param <type> $password
+     * @return User-Objekt or NULL
+     */
+    public static function get_user_by_login($email, $password){
+        // TODO validierung auf injections
+        $sql = "SELECT ID, email, name, vorname, gebDat, lbz_ID, agt, rollen_ID " .
+            "FROM user " .
+            "WHERE ( email like '" . $email .
+            "' ) AND ( " .
+            "passwort = '" . $password . "')";
+
+        $dbConnector = DbConnector::getInstance();
+        $result = $dbConnector->execute_sql($sql);
+
+        if (mysql_num_rows($result) > 0) {
+            // Benutzerdaten in ein Array auslesen.
+            $data = mysql_fetch_array($result);
+
+            $user = new User();
+            $user->setID($data["ID"]);
+            $user->setEmail($data["email"]);
+           // $user->setPassword($data["password"]);
+            $user->setName($data["name"]);
+            $user->setVorname($data["vorname"]);
+            $user->setGebDat($data["gebDat"]);
+            $user->setLbz_ID($data["lbz_ID"]);
+            $user->setAgt($data["agt"]);
+            $user->setRollen_ID($data["rollen_ID"]);
+
+            //folgend aus anderen tabellen
+            $user->setG26_objekt(G26::load($data["ID"]));
+
+            return $user;
+        }else {
+            return NULL;
+        }
+    }
+
 
     /**
      * save_without_pw
@@ -68,50 +112,6 @@ class User { // TODO global gescheites fehlerhandling dazu rückgaben von mysql_
 
 
     /**
-     * get_user_by_login
-     * Erfragt mittels Email und Password den Benutzer aus der DB
-     * (ohne passwort Attribut zu liefern)
-     * @param <type> $email
-     * @param <type> $password
-     * @return User-Objekt or NULL
-     */
-    public static function get_user_by_login($email, $password){
-        // TODO validierung auf injections 
-        $sql = "SELECT ID, email, name, vorname, gebDat, lbz_ID, agt, rollen_ID " .
-            "FROM user " .
-            "WHERE ( email like '" . $email .
-            "' ) AND ( " .
-            "passwort = '" . $password . "')";
-        
-        $dbConnector = DbConnector::getInstance();
-        $result = $dbConnector->execute_sql($sql);
-
-        if (mysql_num_rows($result) > 0) {
-            // Benutzerdaten in ein Array auslesen.
-            $data = mysql_fetch_array($result);
-
-            $user = new User();
-            $user->setID($data["ID"]);
-            $user->setEmail($data["email"]);
-           // $user->setPassword($data["password"]);
-            $user->setName($data["name"]);
-            $user->setVorname($data["vorname"]);
-            $user->setGebDat($data["gebDat"]);
-            $user->setLbz_ID($data["lbz_ID"]);
-            $user->setAgt($data["agt"]);
-            $user->setRollen_ID($data["rollen_ID"]);
-
-            //folgend aus anderen tabellen
-            $user->setG26_objekt(G26::load($data["ID"]));
-
-            return $user;
-        }else {
-            return NULL;
-        }
-    }
-
-
-    /**
      * create_db_entry
      * erstellt einen neuen Eintrag mit dem aktuellen Benutzer
      *
@@ -126,6 +126,9 @@ class User { // TODO global gescheites fehlerhandling dazu rückgaben von mysql_
         $dbConnector = DbConnector::getInstance();
         $result = $dbConnector->execute_sql($sql);
     }
+
+
+    public function delete_with_dependency(){}
 
 
     /**

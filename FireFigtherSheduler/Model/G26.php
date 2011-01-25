@@ -56,6 +56,7 @@ Du bekommst also bei der Untersuchung eine Art haltbarkeitsdatum verpasst.*/
             return NULL;
         }
     }
+    
 
     /**
      * 
@@ -84,6 +85,16 @@ Du bekommst also bei der Untersuchung eine Art haltbarkeitsdatum verpasst.*/
      }
 
 
+     /**
+      *
+      */
+     public function delete(){
+         $sql = "DELETE FROM g26
+             WHERE ID = '$this->ID'";
+         $dbConnector = DbConnector::getInstance();
+         $result = $dbConnector->execute_sql($sql);
+     }
+
 
      /**
       * get_warning_status
@@ -108,16 +119,6 @@ Du bekommst also bei der Untersuchung eine Art haltbarkeitsdatum verpasst.*/
          }
      }
 
-
-     /**
-      * 
-      */
-     public function delete(){
-         $sql = "DELETE FROM g26
-             WHERE ID = '$this->ID'";
-         $dbConnector = DbConnector::getInstance();
-         $result = $dbConnector->execute_sql($sql);
-     }
 
     // ---------------- Down setter and getter ----------------
     
