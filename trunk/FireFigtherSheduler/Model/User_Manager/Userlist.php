@@ -11,14 +11,15 @@
          */
         public function __construct(){
             $user_array=  User::get_userarray_for_manager_view();
-            echo "<table border=1>";
+            $output = "<table border=1>";
             foreach($user_array as $user){
-                echo "<tr onClick=window.location.href=<a href='#' onClick='sendUserInfoRequest(" . $user->getID . ")'>";
-                echo    "<td>" . $user->getName() . "</td>";
-                echo    "<td>" . $user->getVorname() . "</td>";
-                echo "</tr>";
+                $output .= "<tr id='list' onClick=document.location.href='javascript:sendUserInfoRequest(" . $user->getID() . ")' >";
+                $output .=   "<td class='usertable'>" . $user->getName() . "</td>";
+                $output .=    "<td class='usertable'>" . $user->getVorname() . "</td>";
+                $output .= "</tr>";
             }
-            echo "</table>";
+            $output .= "</table>";
+            echo $output;
         }
     }
 

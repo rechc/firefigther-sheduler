@@ -5,7 +5,7 @@
         <title>FFS Benutzer</title>
         <link rel="stylesheet" type="text/css" href="css/users.css" />
         <script type="text/javascript" src="../Controller/jsXMLHttpRequestHandle.js"></script>
-        <script type="text/javascript" src="../Modell/User_Manager/jsUserInfos.js"></script>
+        <script type="text/javascript" src="../Model/User_Manager/jsUserInfos.js"></script>
     </head>
     <body>
         <h1>Benutzer</h1>

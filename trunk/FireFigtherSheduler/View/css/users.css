@@ -30,3 +30,25 @@ root {
     border:1px solid #2F4F4F;
 }
 
+.usertable{
+    width: 150px;
+}
+
+
+tr:hover, tr.highlight { background-color: #aaa; }
+
+#list{
+
+}
+
+#usertable{
+
+}
+
+a:focus{
+    background-color:blue;
+}
+
+a:hover{
+    background-color:red;
+}
