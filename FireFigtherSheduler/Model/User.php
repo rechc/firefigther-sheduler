@@ -226,6 +226,37 @@ Belastungsstrecke älter als 365 Tage*/
          return $user_array;
      }
 
+      public static function get_user($ID){
+         $sql = "SELECT ID, email, name, vorname, gebDat, lbz_ID, agt, rollen_ID
+             FROM user WHERE ID = " . $ID;
+
+         $dbConnector = DbConnector::getInstance();
+         $result = $dbConnector->execute_sql($sql);
+
+         if (mysql_num_rows($result) > 0) {
+            // Benutzerdaten in ein Array auslesen.
+            $data = mysql_fetch_array($result);
+
+            $user = new User();
+            $user->setID($data["ID"]);
+            $user->setEmail($data["email"]);
+           // $user->setPassword($data["password"]);
+            $user->setName($data["name"]);
+            $user->setVorname($data["vorname"]);
+            $user->setGebDat($data["gebDat"]);
+            $user->setLbz_ID($data["lbz_ID"]);
+            $user->setAgt($data["agt"]);
+            $user->setRollen_ID($data["rollen_ID"]);
+
+            //folgend aus anderen tabellen
+            $user->setG26_objekt(G26::load($data["ID"]));
+
+            return $user;
+        }else {
+            return NULL;
+        }
+      }
+
 
     // ---------------- Down setter and getter ----------------
     // auto über alt+einfg  // geht anscheind nicht übers kontextmenü wie bei

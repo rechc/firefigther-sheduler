@@ -1,4 +1,4 @@
-    function sendUserInfoRequest(userID) {
+    function sendUserInfoRequest(userID){
           var xmlHttp = getXMLHttp();
 
           xmlHttp.onreadystatechange = function() {
@@ -6,7 +6,7 @@
               HandleResponse(xmlHttp.responseXML);
             }
           }
-          xmlHttp.open("GET", "../Controller/getUserInfo.php?userID=" + userID, true); //+ Math.random()
+          xmlHttp.open("GET", "../Model/User_Manager/getUserInfo.php?userID=" + userID, true); //+ Math.random()
           xmlHttp.send(null);
     }
 
@@ -46,6 +46,6 @@
             }
          }
 
-          xmlHttp.open("POST", "../Controller/configUsera.php?id=" + id;
+          xmlHttp.open("POST", "../Controller/configUsera.php?id=" + id);
           xmlHttp.send(null);
     }
