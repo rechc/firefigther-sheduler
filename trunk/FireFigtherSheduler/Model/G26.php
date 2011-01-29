@@ -19,10 +19,7 @@ class G26 {
     private $userID;
     private $datum;
     private $gueltigBis;
-    //put your code here
-/*//*G26.3 ist normalerweise alle 3 jahre faellig.
-Der Arzt kann aber auch andere Daten festlegen, wie er es fuer richtig haelt.
-Du bekommst also bei der Untersuchung eine Art haltbarkeitsdatum verpasst.*/
+
     /**
      * Standard Konstruktor
      */
@@ -30,7 +27,8 @@ Du bekommst also bei der Untersuchung eine Art haltbarkeitsdatum verpasst.*/
 
     
     /**
-     *
+     * load
+     * laed das Objekt aus der DB anhand seiner ID
      * @param <type> $ID
      * @return G26-Objekt or NULL
      */
@@ -59,7 +57,8 @@ Du bekommst also bei der Untersuchung eine Art haltbarkeitsdatum verpasst.*/
     
 
     /**
-     * 
+     * save
+     * speichert das Objekt anhand seiner ID
      */
     public function save(){
         //kann fehlschlagen falls g26 gelöscht wurde -> handling
@@ -74,11 +73,12 @@ Du bekommst also bei der Untersuchung eine Art haltbarkeitsdatum verpasst.*/
 
 
     /**
-     * 
+     * create_db_entry
+     * legt ein neues Objekt mit seinen Parametern an
      */
      public function create_db_entry(){
-         $sql= "INSERT INTO g26 ( userID, datum, gueltigBis)
-        VALUES ( '$this->userID', '$this->datum', '$this->gueltigBis' )";
+        $sql= "INSERT INTO g26 ( userID, datum, gueltigBis)
+            VALUES ( '$this->userID', '$this->datum', '$this->gueltigBis' )";
 
         $dbConnector = DbConnector::getInstance();
         $result = $dbConnector->execute_sql($sql);
@@ -86,7 +86,8 @@ Du bekommst also bei der Untersuchung eine Art haltbarkeitsdatum verpasst.*/
 
 
      /**
-      *
+      * delete
+      * löscht das Objekt anhand seiner ID
       */
      public function delete(){
          $sql = "DELETE FROM g26

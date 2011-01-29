@@ -3,22 +3,21 @@ require_once('../Model/User.php');
 
 //schnelle unsaubere tests
 
-
-function testusr(){
-    $email = "t.lana@ff-riegelsberg.de";
-    $password = 4711;
-
-    $user = User::get_user_by_login($email, $password);
-
-
+function test_ausgabe($user){
     echo $user->getEmail();
+    echo "<br>";
     echo $user->getName();
+    echo "<br>";
     echo $user->getVorname();
+    echo "<br>";
+    echo "G26: ";
+    if ($user->getG26_objekt() != NULL){
 
-    $user->setName("Lan");
-    $user->save_without_pw();
-
+        echo $user->getG26_objekt()->getGueltigBis();//->delete(); <- tested
+    }else{echo "null";}
+    echo "<br>";
 }
+
 
 function testcreate(){
     $user = new User;
@@ -31,29 +30,30 @@ function testcreate(){
     $user->create_db_entry();
 }
 
-function testusrlist(){
+function testusrmanagerlist(){
     $user_array=  User::get_userarray_for_manager_view();
     foreach($user_array as $user){
-        echo $user->getName(),"<br />";
+        test_ausgabe($user);
+        echo "<br>";
+        echo "<br>";
     }
 }
 
-function testusraddg26(){
+function testusrg26(){
     $email = "t.lana@ff-riegelsberg.de";
     $password = 4711;
 
     $user = User::get_user_by_login($email, $password);
-    if ($user->getG26_objekt() != NULL){
-        echo "!=null";
-        echo '<br>';
-        echo $user->getG26_objekt()->getGueltigBis();//->delete(); <- tested
-    }else{echo "null";}
+    test_ausgabe($user);
 }
+
+
+
 
 //testusr();
  //testcreate();
-//testusrlist();
-testusraddg26();
+//testusrmanagerlist();
+testusrg26();
 
 
 ?>
