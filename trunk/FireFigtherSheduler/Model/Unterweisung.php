@@ -49,6 +49,7 @@ class Unterweisung {
             return NULL;
         }   
     }
+
     
     /**
      * save
@@ -80,7 +81,6 @@ class Unterweisung {
      }
 
     
-
      /**
       * delete_with_dependencys
       * loescht das Objekt mit den Abhaengigkeiten zu den Benutzern
@@ -97,10 +97,10 @@ class Unterweisung {
         $result = $dbConnector->execute_sql($sql);
     }
 
-
     
     /**
-     *
+     * is_expired
+     * prueft ob abgelaufen
      * @return <type> 
      */
     public function is_expired(){
@@ -117,6 +117,7 @@ class Unterweisung {
          }
     }
 
+    
     // ---------------- Down setter and getter ----------------
 
     public function setID($ID) {
