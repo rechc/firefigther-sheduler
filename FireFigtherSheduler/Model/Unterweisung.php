@@ -20,9 +20,12 @@ class Unterweisung {
      */
     public function __construct(){}
 
-    
+
     /**
-     * 
+     * load
+     * laed das Objekt aus der DB anhand seiner ID
+     * @param <type> $ID
+     * @return Unterweisung Objekt or NULL
      */
     public static function load($ID){
         $sql="SELECT *
@@ -48,19 +51,53 @@ class Unterweisung {
     }
     
     /**
-     *
+     * save
+     * speichert das Objekt anhand seiner ID
      */
-    public function save(){}
+    public function save(){
+        //kann fehlschlagen falls gelöscht wurde -> handling
+        $sql = "UPDATE unterweisung
+            SET ort = '$this->ort', datum = '$this->datum',
+                verantID = '$this->verantID'
+            WHERE ID = '$this->ID'";
 
-    public function create_db_entry(){}
+        $dbConnector = DbConnector::getInstance();
+        $result = $dbConnector->execute_sql($sql);
+    }
+
 
     /**
-     *
+     * create_db_entry
+     * legt ein neues Objekt mit seinen Parametern an
      */
-    public function delete_if_not_referenced(){}
+     public function create_db_entry(){
+        //aktuell gibt es keine Prüfung ab alle Daten im Objekt vorhanden sind
+        $sql= "INSERT INTO unterweisung ( ort, datum, verantID)
+            VALUES ( '$this->ort', '$this->datum', '$this->verantID' )";
 
+        $dbConnector = DbConnector::getInstance();
+        $result = $dbConnector->execute_sql($sql);
+     }
+
+
+    /**
+     * delete_if_not_referenced
+     * löscht das Objekt falls es nicht mehr referenziert wird
+     */
+    public function delete_if_not_referenced(){
+        if (false){ // daten kommen noch
+            $sql = "DELETE FROM unterweisung
+                WHERE ID = '$this->ID'";
+            $dbConnector = DbConnector::getInstance();
+            $result = $dbConnector->execute_sql($sql);
+        }
+    }
 
     
+
+    // wird nur ggf benoetigt, wenn man eine unterweisung explizit und somit von allen benutzern entfernen will
+    public function delete_with_references(){}
+
 
     
     /**
@@ -74,8 +111,8 @@ class Unterweisung {
                  (int)substr($this->datum,8,2),
                  (int)substr($this->datum,0,4));
          $date_difference = floor(($datum_formated - $timestamp)/86400);
-         if ($date_difference < -111){ //TODO  weis nemmer für was unterweisungsstrecke da ist
-            return true;
+         if ($date_difference < -111){ //TODO  weis nemmer für was unterweisungsstrecke da ist, abwaerts ueberarbeiten
+            return Config::green();
          }else{
              return Config::red();
          }
