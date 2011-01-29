@@ -109,6 +109,7 @@ class User { // TODO global gescheites fehlerhandling dazu rückgaben von mysql_
     /**
      * save_without_pw
      * speichert Änderungen am User Objekt, ohne Berücksichtigung des Passworts
+     * ohne abhaengig Tabellen wie G26
      */
     public function save_without_pw(){
         //kann fehlschlagen falls benutzer gelöscht wurde -> handling
@@ -127,6 +128,7 @@ class User { // TODO global gescheites fehlerhandling dazu rückgaben von mysql_
     /**
      * save_pw
      * speichert ein neues Passwort
+     * ohne abhaengig Tabellen wie G26
      */
     public function save_pw(){
          //kann fehlschlagen falls benutzer gelöscht wurde -> handling
@@ -156,7 +158,12 @@ class User { // TODO global gescheites fehlerhandling dazu rückgaben von mysql_
     }
 
 
-    public function delete_with_dependency(){}
+    public function delete_with_dependencys(){}
+
+    // nur die abhaengigkeiten werden gelöscht also die m-n tables nicht aber die listen objekte
+    // die 1zun werden direkt gelöscht
+    // die m-n objekte werden manuell gelöscht das ein abhaengiges loeschen sehr unwahrscheinlich ist und diese listen sowieso gepflegt werden
+    private function delete_dependencys(){}
 
 
     /**

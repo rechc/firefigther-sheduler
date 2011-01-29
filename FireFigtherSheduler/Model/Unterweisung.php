@@ -79,24 +79,23 @@ class Unterweisung {
         $result = $dbConnector->execute_sql($sql);
      }
 
-
-    /**
-     * delete_if_not_referenced
-     * löscht das Objekt falls es nicht mehr referenziert wird
-     */
-    public function delete_if_not_referenced(){
-        if (false){ // daten kommen noch
-            $sql = "DELETE FROM unterweisung
-                WHERE ID = '$this->ID'";
-            $dbConnector = DbConnector::getInstance();
-            $result = $dbConnector->execute_sql($sql);
-        }
-    }
-
     
 
-    // wird nur ggf benoetigt, wenn man eine unterweisung explizit und somit von allen benutzern entfernen will
-    public function delete_with_references(){}
+     /**
+      * delete_with_dependencys
+      * loescht das Objekt mit den Abhaengigkeiten zu den Benutzern
+      */
+    public function delete_with_dependencys(){
+        $sql = "DELETE FROM unterweisung
+        WHERE ID = '$this->ID'";
+        $dbConnector = DbConnector::getInstance();
+        $result = $dbConnector->execute_sql($sql);
+
+        // dependencys
+        $sql = "DELETE FROM r_unterweisungUser
+        WHERE unterweisung_ID = '$this->ID'";
+        $result = $dbConnector->execute_sql($sql);
+    }
 
 
     
