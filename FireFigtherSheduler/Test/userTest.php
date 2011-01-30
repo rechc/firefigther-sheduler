@@ -1,5 +1,7 @@
 <?php
 require_once('../Model/User.php');
+require_once('../Model/UnterweisungListe.php');
+require_once('../Model/Unterweisung.php');
 
 //schnelle unsaubere tests
 
@@ -16,6 +18,18 @@ function test_ausgabe($user){
         echo $user->getG26_object()->getGueltigBis();//->delete(); <- tested
     }else{echo "null";}
     echo "<br>";
+    echo '<br>', "unterweisung: ",'<br>';
+    $uwlist = $user->getUnterweisungListe_object();
+    echo "warning",$uwlist->get_warning_status(), '<br>';
+
+    $array = $uwlist->getUnterweisung_array();
+    if ($array[0] != NULL){}else{echo "eintrag eins geleich null ",'<br>';}
+   
+    foreach( $array as  $array_entry){
+        echo $array_entry->getOrt() , '<br>';
+        echo $array_entry->getDatum() , '<br>';
+
+    }
 }
 
 
@@ -52,8 +66,8 @@ function testusrg26(){
 
 //testusr();
  //testcreate();
-testusrmanagerlist();
-//testusrg26();
+//testusrmanagerlist();
+testusrg26();
 
 
 ?>
