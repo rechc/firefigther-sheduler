@@ -6,7 +6,7 @@ require_once('../Configuration/Config.php');
  * Description of Unterweisung
  *
  * @author Warken Andreas
- * @version alpha
+ * @version alpha+
  */
 class Unterweisung {
     private $ID;
@@ -48,6 +48,15 @@ class Unterweisung {
         }else{
             return NULL;
         }   
+    }
+
+    public static function parse_result_as_objekt($row){
+         $unterweisung = new Unterweisung();
+         $unterweisung->setID($row["ID"]);
+         $unterweisung->setOrt($row["ort"]);
+         $unterweisung->setDatum($row["datum"]);
+         $unterweisung->setVerantID($row["verantID"]);
+         return $unterweisung;
     }
 
     
@@ -110,10 +119,11 @@ class Unterweisung {
                  (int)substr($this->datum,8,2),
                  (int)substr($this->datum,0,4));
          $date_difference = floor(($datum_formated - $timestamp)/86400);
-         if ($date_difference < -111){ //TODO  weis nemmer für was unterweisungsstrecke da ist, abwaerts ueberarbeiten
-            return Config::green();
+        // echo $date_difference,'<br>';
+         if ($date_difference < 0){ //TODO  weis nemmer für was unterweisungsstrecke da ist, abwaerts ueberarbeiten
+            return Config::red();
          }else{
-             return Config::red();
+             return Config::green();// vorl noch ueberlegen wann gelb 30 tage vorher ? oder noch ne farbe nur fuer abgelaufen aber nicht relevant im zusammenhang
          }
     }
 

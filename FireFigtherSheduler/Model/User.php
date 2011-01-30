@@ -25,7 +25,10 @@ class User { // TODO global gescheites fehlerhandling dazu rückgaben von mysql_
     /** Agt ist Atemschutzgeraetetraeger. (boolean) */
     private $agt; 
     private $rollen_ID;
-    private $g26_objekt;
+    // folgendes sind Objekte
+    private $g26_object;
+    private $unterweisungListe_object;
+
 
 
     /**
@@ -53,7 +56,7 @@ class User { // TODO global gescheites fehlerhandling dazu rückgaben von mysql_
         $dbConnector = DbConnector::getInstance();
         $result = $dbConnector->execute_sql($sql);
 
-        return USER::parse_result_as_objekt($result);
+        return USER::parse_result_as_object($result);
     }
 
 
@@ -69,17 +72,17 @@ class User { // TODO global gescheites fehlerhandling dazu rückgaben von mysql_
          $dbConnector = DbConnector::getInstance();
          $result = $dbConnector->execute_sql($sql);
 
-         return USER::parse_result_as_objekt($result);
+         return USER::parse_result_as_object($result);
     }
 
     
     /**
-     * parse_result_as_objekt
+     * parse_result_as_object
      * weist die Daten aus der DB einem UserObjekt zu und liefert dies zurueck
      * @param <type> $result
      * @return User
      */
-    private static function parse_result_as_objekt($result){
+    private static function parse_result_as_object($result){
         if (mysql_num_rows($result) > 0) {
             // Benutzerdaten in ein Array auslesen.
             $data = mysql_fetch_array($result);
@@ -96,7 +99,8 @@ class User { // TODO global gescheites fehlerhandling dazu rückgaben von mysql_
             $user->setRollen_ID($data["rollen_ID"]);
 
             //folgend aus anderen tabellen
-            $user->setG26_objekt(G26::load($data["ID"]));
+            $user->setG26_object(G26::load($data["ID"]));
+
 
             return $user;
         }else {
@@ -304,13 +308,18 @@ Belastungsstrecke älter als 365 Tage*/
         $this->rollen_ID = $rollen_ID;
     }
 
-    public function setG26_objekt($g26_objekt) {
-        if (is_a($g26_objekt, 'G26')){
-            $this->g26_objekt = $g26_objekt;
+    public function setG26_object($g26_object) {
+        if (is_a($g26_object, 'G26')){
+            $this->g26_object = $g26_object;
         }else{
             //fehlerhandling
         }   
     }
+
+    public function setUnterweisungListe_object($unterweisungListe_object) {
+        $this->unterweisungListe_object = $unterweisungListe_object;
+    }
+
 
     public function getID() {
         return $this->ID;
@@ -348,9 +357,15 @@ Belastungsstrecke älter als 365 Tage*/
         return $this->rollen_ID;
     }
 
-    public function getG26_objekt() {
-        return $this->g26_objekt;
+    public function getG26_object() {
+        return $this->g26_object;
     }
+
+    public function getUnterweisungListe_object() {
+        return $this->unterweisungListe_object;
+    }
+
+
 
 }
 
