@@ -22,8 +22,6 @@ function laden_liste(){
         echo $array_entry->getOrt() , '<br>';
         echo $array_entry->getDatum() , '<br>';
     }
-    
-
 }
 
 
