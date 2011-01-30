@@ -11,9 +11,9 @@ function test_ausgabe($user){
     echo $user->getVorname();
     echo "<br>";
     echo "G26: ";
-    if ($user->getG26_objekt() != NULL){
+    if ($user->getG26_object() != NULL){
 
-        echo $user->getG26_objekt()->getGueltigBis();//->delete(); <- tested
+        echo $user->getG26_object()->getGueltigBis();//->delete(); <- tested
     }else{echo "null";}
     echo "<br>";
 }
@@ -52,8 +52,8 @@ function testusrg26(){
 
 //testusr();
  //testcreate();
-//testusrmanagerlist();
-testusrg26();
+testusrmanagerlist();
+//testusrg26();
 
 
 ?>
