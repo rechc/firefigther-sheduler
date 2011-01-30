@@ -8,7 +8,8 @@
  * Description of UnterweisungListe
  * realisiert die m zu n Beziehung zwischen User und Unterweisung
  * 
- * @author awagen
+ * @author Warken Andreas
+ * @version alpha+
  */
 class UnterweisungListe {
     
@@ -74,7 +75,7 @@ class UnterweisungListe {
     public function get_warning_status(){
         // hm kann ich hier davon ausgehen dass ich immer es neuste durch swl sortierung vorne in der liste habe -> vorlaeufig ja
         if (is_a ( $this->unterweisung_array[0] , "Unterweisung" )){
-            return $this->unterweisung_array[0]->is_expired();
+            return $this->unterweisung_array[0]->get_warning_status();
         }else{
             return Config::red(); // vorläufig ka ... wenn halt keine da ist
         }

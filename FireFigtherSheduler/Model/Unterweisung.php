@@ -108,11 +108,11 @@ class Unterweisung {
 
     
     /**
-     * is_expired
+     * get_warning_status
      * prueft ob abgelaufen
      * @return <type> 
      */
-    public function is_expired(){
+    public function get_warning_status(){
         $timestamp = time();
         $datum_formated =  mktime(0,0,0,
                  (int)substr($this->datum,5,2),
