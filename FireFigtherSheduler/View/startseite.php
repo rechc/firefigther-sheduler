@@ -49,9 +49,14 @@
                     include('login_formular.php');
                 }
                 ?>
-            </div>
+            </div> 
         </div>
-
+            <div> 
+                <?php
+                define('ABSPATH', dirname(__FILE__).'\\');
+                echo "ABSPATJ: " . ABSPATH . "<br />";
+                ?>
+            </div>
         <div id="foot">
             <a href="http://www.ff-riegelsberg.de/?page_id=30">Impressum</a>
         </div>
