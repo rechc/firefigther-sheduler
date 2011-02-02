@@ -5,9 +5,6 @@
  *@author Rech Christian
  *@version alpha
  */
-
-//echo "<script type='text/javascript'>alert('createUser');</script>";
-
     require_once '../Model/User.php';
 
     $user = new User();
