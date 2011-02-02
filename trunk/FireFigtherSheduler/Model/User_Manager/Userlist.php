@@ -1,5 +1,5 @@
 <?php
-    require_once('../Model/User.php');
+    require_once('../Model/AllUser.php');
 
     /**
      * author christian
@@ -9,8 +9,10 @@
         /**
          * Standard Konstruktor
          */
-        public function __construct(){
-            $user_array=  User::get_userarray_for_manager_view();
+        public function __construct(){}
+
+        public static function getUserTable(){
+            $user_array=AllUser::get_userarray_for_manager_view();
             $output = "<table border=1>";
             foreach($user_array as $user){
                 $output .= "<tr id='list' onClick=document.location.href='javascript:sendUserInfoRequest(" . $user->getID() . ")' >";

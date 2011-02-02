@@ -12,31 +12,31 @@
         <div id="userlist">
             <?php
               require_once('../Model/User_Manager/Userlist.php');
-              $userlist = new Userlist();
+              $userlist = Userlist::getUserTable();
             ?>
         </div>
         <div id="userdata">
-            <form id="editUser" onsubmit="return false;" action="">
+            <form id="editUser" action="../Controller/createUser.php" method="post">
                 <table border="0">
                     <tr>
-                        <td><div>Name: <input type ="text" id="lastname" value=""></div></td>
-                        <td><div>Vorname: <input type ="text" id="firstname" value=""></div></td>
+                        <td><div>Name: <input type ="text" name="lastname" id="lastname" value=""></div></td>
+                        <td><div>Vorname: <input type ="text" name="firstname" id="firstname" value=""></div></td>
                     </tr>
                     <tr>
-                        <td><div>E-Mail: <input type ="text" id="email"></div></td>
-                        <td><div>Geburtsdatum: <input type ="text" id="bday"></div></td>
+                        <td><div>E-Mail: <input type ="text" name ="email" id="email"></div></td>
+                        <td><div>Geburtsdatum: <input type ="text" name="bday" id="bday"></div></td>
                     </tr>
                     <tr>
                         <td colspan="2">
                             <div>Geschlecht:
-                                  männlisch <input type="radio" value="maennlisch" name="Geschlecht" id="man">
-                                  weiblisch <input type="radio" value="weiblisch" name="Geschlecht" id="woman">
+                                  männlich <input type="radio" value="maennlisch" name="Geschlecht" id="man">
+                                  weiblich <input type="radio" value="weiblisch" name="Geschlecht" id="woman">
                              </div>
                         </td>
                     </tr>
                     <tr>
-                        <td><div><input type="button" value="hinzufügen" name="ok" onClick="createNewUser();"></div></td>
-                        <td><div><input type ="button" value="abbrechen" name="reset"</div></td>
+                        <td><div><input type="submit" value="hinzufügen" name="ok" id="ok"></div></td>
+                        <td><div><input type ="button" value="abbrechen" name="reset" id="reset"></div></td>
                     </tr>
                 </table>
             </form>
