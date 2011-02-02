@@ -15,6 +15,10 @@ root {
     display: block;
 }
 
+#delete{
+    visibility: hidden;
+}
+
 #userdata{
     position: absolute;
     top: 350px;

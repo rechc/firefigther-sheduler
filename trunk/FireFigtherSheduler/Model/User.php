@@ -233,7 +233,11 @@ Belastungsstrecke älter als 365 Tage*/
         return false;
     }
 
-    
+    public static function deleteUser($ID){
+        $sql = "DELETE FROM user WHERE id=".$ID;
+        $dbConnector = DbConnector::getInstance();
+        $result = $dbConnector->execute_sql($sql);
+    }
 
     // ---------------- Down setter and getter ----------------
     // auto über alt+einfg  // geht anscheind nicht übers kontextmenü wie bei

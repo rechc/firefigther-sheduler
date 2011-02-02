@@ -6,6 +6,7 @@
         <link rel="stylesheet" type="text/css" href="css/users.css" />
         <script type="text/javascript" src="../Controller/jsXMLHttpRequestHandle.js"></script>
         <script type="text/javascript" src="../Model/User_Manager/jsUserInfos.js"></script>
+        <script type="text/javascript" src="../Model/User_Manager/jsDeleteUser.js"></script>
     </head>
     <body>
         <h1>Benutzer</h1>
@@ -17,6 +18,7 @@
         </div>
         <div id="userdata">
             <form id="editUser" action="../Controller/createUser.php" method="post">
+                Benutzer-ID: <input type ="text" name="id" id="id" value="" readonly>
                 <table border="0">
                     <tr>
                         <td><div>Name: <input type ="text" name="lastname" id="lastname" value=""></div></td>
@@ -35,10 +37,16 @@
                         </td>
                     </tr>
                     <tr>
-                        <td><div><input type="submit" value="hinzufügen" name="ok" id="ok"></div></td>
-                        <td><div><input type ="button" value="abbrechen" name="reset" id="reset"></div></td>
+                        <td colspan="2">
+                            <div>
+                                <input type="submit" value="hinzufügen" name="ok" id="ok">
+                                <input type="button" value="löschen" name="delete" id="delete" onClick="document.location.href='javascript:sendDeleteUserRequest(document.getElementById(id))'">
+                                <input type ="reset" value="abbrechen" name="reset" id="reset">
+                             </div>
+                        </td>
                     </tr>
                 </table>
+                <div name="infobox" id ="infobox"></div>
             </form>
         </div>
     </body>
