@@ -19,8 +19,7 @@ require_once('StreckeListe.php');
  * @version alpha
  * 
  */
-class User { // TODO global gescheites fehlerhandling dazu rückgaben von mysql_query() noch anschauen, bzw noch typprüfungen "bool is_a ( object $object , string $class_name )"
-    //dynamisches nachladen der objekt variablen,welche selten gebraucht werden, bei get anfrage ?
+class User { // TODO sqls hier was bedeutet der Punkt in den Statements
 
     private $ID;
     private $email;
@@ -65,12 +64,12 @@ class User { // TODO global gescheites fehlerhandling dazu rückgaben von mysql_
      * get_user_by_login
      * Erfragt mittels Email und Password den Benutzer aus der DB
      * (ohne passwort Attribut zu liefern)
+     *
      * @param <type> $email
      * @param <type> $password
-     * @return User-Objekt or NULL
+     * @return User-Objekt 
      */
     public static function get_user_by_login($email, $password) {
-        // TODO validierung auf injections
         $sql = "SELECT ID, email, name, vorname, gebDat, lbz_ID, agt, rollen_ID " .
                 "FROM user " .
                 "WHERE ( email like '" . $email .
@@ -84,25 +83,32 @@ class User { // TODO global gescheites fehlerhandling dazu rückgaben von mysql_
     }
 
     /**
-     *
+     * get_user
+     * liefert den vollständigen User mit allen Listen (ausser passwort)
      * @param <type> $ID
-     * @return User 
+     * @return User-Objekt 
      */
     public static function get_user($ID) {
-        $sql = "SELECT ID, email, name, vorname, gebDat, lbz_ID, agt, rollen_ID
-             FROM user WHERE ID = " . $ID;
+        if (is_numeric($ID)) {
+            $sql = "SELECT ID, email, name, vorname, gebDat, lbz_ID, agt, rollen_ID
+                 FROM user WHERE ID = " . $ID;
 
-        $dbConnector = DbConnector::getInstance();
-        $result = $dbConnector->execute_sql($sql);
+            $dbConnector = DbConnector::getInstance();
+            $result = $dbConnector->execute_sql($sql);
 
-        return USER::parse_result_as_object($result);
+            return USER::parse_result_as_object($result);
+        } else {
+            throw new FFSException(ExceptionText::user_ID_not_numeric());
+        }
     }
 
     /**
      * parse_result_as_object
-     * weist die Daten aus der DB einem UserObjekt zu und liefert dies zurueck
-     * @param <type> $result
-     * @return User
+     * weist die Daten aus der DB einem UserObjekt zu
+     * und liefert dies mit allen Listen (ausser passwort)
+     * 
+     * @param <type> $result MySql Result-Set
+     * @return User-Objekt 
      */
     private static function parse_result_as_object($result) {
         if (mysql_num_rows($result) > 0) {
@@ -123,20 +129,22 @@ class User { // TODO global gescheites fehlerhandling dazu rückgaben von mysql_
             //folgend aus anderen tabellen
             $user->setG26_object(G26::load($data["ID"]));
             $user->setUnterweisungListe_object(UnterweisungListe::load($data["ID"]));
+            $user->setUebungListe_object(UebungListe::load($data["ID"]));
+            $user->setEinsatzListe_object(EinsatzListe::load($data["ID"]));
+            $user->setStreckeListe_object(StreckeListe::load($data["ID"]));
 
             return $user;
         } else {
-            return NULL;
+            throw new FFSException(ExceptionText::user_not_found());
         }
     }
 
     /**
      * save_without_pw
      * speichert Änderungen am User Objekt, ohne Berücksichtigung des Passworts
-     * ohne abhaengig Tabellen wie G26
+     * ohne abhaengige Listen wie G26
      */
     public function save_without_pw() {
-        //kann fehlschlagen falls benutzer gelöscht wurde -> handling
         $sql = "UPDATE user
             SET email = '$this->email', name = '$this->name',
                 vorname = '$this->vorname', gebDat = '$this->gebDat',
@@ -151,10 +159,9 @@ class User { // TODO global gescheites fehlerhandling dazu rückgaben von mysql_
     /**
      * save_pw
      * speichert ein neues Passwort
-     * ohne abhaengig Tabellen wie G26
+     * ohneabhaengige Listen wie G26
      */
     public function save_pw() {
-        //kann fehlschlagen falls benutzer gelöscht wurde -> handling
         $sql = "UPDATE user
             SET password = '$this->password'
             WHERE ID = '$this->ID'";
@@ -166,28 +173,57 @@ class User { // TODO global gescheites fehlerhandling dazu rückgaben von mysql_
     /**
      * create_db_entry
      * erstellt einen neuen Eintrag mit dem aktuellen Benutzer
-     *
      */
     public function create_db_entry() {
-        //TODO missing lbz und agt, festellung kein uniqueness der email
-        $sql = "INSERT INTO user ( name, vorname, email,  passwort , rollen_ID,
-            gebDat)
-        VALUES ( '$this->name', '$this->vorname', '$this->email',
-                '$this->password', '$this->rollen_ID', '$this->gebDat' )";
+        if (($this->name != NULL) and ($this->vorname != NULL) and
+                ($this->email != NULL) and ($this->password != NULL) and
+                ($this->rollen_ID != NULL) and ($this->gebDat != NULL) and
+                ($this->lbz_ID != NULL) and ( $this->agt != NULL)) {
+            $sql = "INSERT INTO user ( name, vorname, email,  passwort , rollen_ID,
+                    gebDat, lbz_ID, agt)
+                VALUES ( '$this->name', '$this->vorname', '$this->email',
+                    '$this->password', '$this->rollen_ID', '$this->gebDat',
+                    '$this->lbz_ID', '$this->agt' )";
 
+            $dbConnector = DbConnector::getInstance();
+            $result = $dbConnector->execute_sql($sql);
+        } else {
+            throw new FFSException(ExceptionText::user_missing_param());
+        }
+    }
+
+    /**
+     * delete_with_dependencys
+     * loescht den Benutzer mit seinen direkten Abhaengigkeiten:
+     * - alle user_ID Fremdschlüssel (uebung unterweisung strekce einsatz)
+     * - zugehoeriges G26 Objekt
+     */
+    public function delete_with_dependencys() {
+        $sql = "DELETE FROM user
+        WHERE ID = '$this->ID';";
         $dbConnector = DbConnector::getInstance();
         $result = $dbConnector->execute_sql($sql);
-    }
 
-    public function delete_with_dependencys() {
+        // dependencys
+        $sql = "DELETE FROM r_streckeUser
+        WHERE user_ID = '$this->ID';";
+        $result = $dbConnector->execute_sql($sql);
 
-    }
+        $sql = "DELETE FROM r_uebungUser
+        WHERE user_ID = '$this->ID';";
+        $result = $dbConnector->execute_sql($sql);
 
-    // nur die abhaengigkeiten werden gelöscht also die m-n tables nicht aber die listen objekte
-    // die 1zun werden direkt gelöscht
-    // die m-n objekte werden manuell gelöscht das ein abhaengiges loeschen sehr unwahrscheinlich ist und diese listen sowieso gepflegt werden
-    private function delete_dependencys() {
-        
+        $sql = "DELETE FROM r_unterweisungUser
+        WHERE user_ID = '$this->ID';";
+        $result = $dbConnector->execute_sql($sql);
+
+        $sql = "DELETE FROM r_einsatzUser
+        WHERE user_ID = '$this->ID';";
+        $result = $dbConnector->execute_sql($sql);
+
+        $sql = "DELETE FROM g26
+        WHERE userID = '$this->ID';";
+        $result = $dbConnector->execute_sql($sql);
     }
 
     /**
@@ -248,10 +284,134 @@ class User { // TODO global gescheites fehlerhandling dazu rückgaben von mysql_
         return false;
     }
 
+    //TODO @Rech brauchst du die methode als static ? wenn ja sag bescheid dann muss ich sie anpassen ansonsten nutz die delete_with_dependencys()
     public static function deleteUser($ID) {
         $sql = "DELETE FROM user WHERE id=" . $ID;
         $dbConnector = DbConnector::getInstance();
         $result = $dbConnector->execute_sql($sql);
+    }
+
+    /**
+     * erwartet einen vollen (betrunkenen) Benutzer ^^
+     * wem was nicht an der Ausgabe gefaellt, schoener machen ohne zu fragen
+     * @deprecated !
+     */
+    public function debug_output_full_user(){
+        echo  '<h3>',"User:"  ,'</h3>', '<br>';
+        echo "Email: ", $this->getEmail(), '<br>';
+        echo "Name: ", $this->getName(), '<br>';
+        echo "Vorname: ", $this->getVorname(), '<br>';
+        echo "ID: ", $this->getID(), '<br>';
+        echo "GebDat.: ", $this->getGebDat(), '<br>';
+        echo "LoeschbezirkID: ", $this->getLbz_ID(), '<br>';
+        echo "Atemschutzg.: ", $this->getAgt(), '<br>';
+        echo "Rollen_ID: ", $this->getRollen_ID(), '<br>';
+        echo "Warning Status: ", $this->get_warning_status(), '<br>';
+
+        echo  '<h3>',"G26:"  ,'</h3>', '<br>';
+        $g26 = $this->getG26_object();
+        if ($g26 != NULL) {
+            echo "GDatum: ",$g26->getDatum(), '<br>';
+            echo "GGueltigBis: ",$g26->getGueltigBis(), '<br>';
+            echo "GID: ",$g26->getID(), '<br>';
+            echo "GUserID: ",$g26->getUserID(), '<br>';
+            echo "Gwarning_status: ",$g26->get_warning_status(), '<br>';
+        } else {
+            echo "G26 null",'<br>';
+        }
+
+        echo  '<h3>',"Unterweisungen:"  ,'</h3>', '<br>';
+
+        $uwlist = $this->getUnterweisungListe_object();
+        if ($uwlist != NULL) {
+            echo "UnterwBestWarning Status: ", $uwlist->get_warning_status(), '<br>';
+            $uwarray = $uwlist->getUnterweisung_array();
+            foreach ($uwarray as $uwarray_entry) {
+                echo "NEXT", '<br>';
+                echo "UOrt: ",$uwarray_entry->getOrt(), '<br>';
+                echo "UDatum: ",$uwarray_entry->getDatum(), '<br>';
+                echo "UID: ",$uwarray_entry->getID(), '<br>';
+                echo "UVerantID: ",$uwarray_entry->getVerantID(), '<br>';
+                echo "Uwarning_status: ",$uwarray_entry->get_warning_status(), '<br>';
+                echo '<br>';
+            }
+        } else {
+            echo "Unterweisung null",'<br>';
+        }
+
+        echo  '<h3>',"Uebungen:"  ,'</h3>', '<br>';
+
+        $ublist = $this->getUebungListe_object();
+        if ($ublist != NULL) {
+            echo "UbBestWarning Status: ", $ublist->get_warning_status(), '<br>';
+            $ubarray = $ublist->getUebung_array();
+            foreach ($ubarray as $ubarray_entry) {
+                echo "NEXT", '<br>';
+                echo "UbOrt: ",$ubarray_entry->getOrt(), '<br>';
+                echo "UbDatum: ",$ubarray_entry->getDatum(), '<br>';
+                echo "UbID: ",$ubarray_entry->getID(), '<br>';
+                echo "Ubwarning_status: ",$ubarray_entry->get_warning_status(), '<br>';
+                echo '<br>';
+            }
+        } else {
+            echo "Uebung null",'<br>';
+        }
+
+        echo  '<h3>',"Strecke:"  ,'</h3>', '<br>';
+
+        $stlist = $this->getStreckeListe_object();
+        if ($stlist != NULL) {
+            echo "StBestWarning Status: ", $stlist->get_warning_status(), '<br>';
+            $starray = $stlist->getStrecke_array();
+            foreach ($starray as $starray_entry) {
+                echo "NEXT", '<br>';
+                echo "StOrt: ",$starray_entry->getOrt(), '<br>';
+                echo "StDatum: ",$starray_entry->getDatum(), '<br>';
+                echo "StID: ",$starray_entry->getID(), '<br>';
+                echo "Stwarning_status: ",$starray_entry->get_warning_status(), '<br>';
+                echo '<br>';
+            }
+        } else {
+            echo "Strecke null",'<br>';
+        }
+
+        echo  '<h3>',"Einsatz:"  ,'</h3>', '<br>';
+
+        $elist = $this->getEinsatzListe_object();
+        if ($elist != NULL) {
+            echo "EBestWarning Status: ", $elist->get_warning_status(), '<br>';
+            $earray = $elist->getEinsatz_array();
+            foreach ($earray as $earray_entry) {
+                echo "NEXT", '<br>';
+                echo "EOrt: ",$earray_entry->getOrt(), '<br>';
+                echo "EDatum: ",$earray_entry->getDatum(), '<br>';
+                echo "EID: ",$earray_entry->getID(), '<br>';
+                echo "Ewarning_status: ",$earray_entry->get_warning_status(), '<br>';
+                echo '<br>';
+            }
+        } else {
+            echo "Einsatz null",'<br>';
+        }
+
+
+        /*
+
+        echo "<br>";
+        echo '<br>', "unterweisung: ", '<br>';
+        $uwlist = $user->getUnterweisungListe_object();
+        echo "warning", $uwlist->get_warning_status(), '<br>';
+
+        $array = $uwlist->getUnterweisung_array();
+        if ($array[0] != NULL) {
+
+        } else {
+            echo "eintrag eins geleich null ", '<br>';
+        }
+
+        foreach ($array as $array_entry) {
+            echo $array_entry->getOrt(), '<br>';
+            echo $array_entry->getDatum(), '<br>';
+        }*/
     }
 
     // ---------------- Down setter and getter ----------------
@@ -307,6 +467,18 @@ class User { // TODO global gescheites fehlerhandling dazu rückgaben von mysql_
         $this->unterweisungListe_object = $unterweisungListe_object;
     }
 
+    public function setUebungListe_object($uebungListe_object) {
+        $this->uebungListe_object = $uebungListe_object;
+    }
+
+    public function setEinsatzListe_object($einsatzListe_object) {
+        $this->einsatzListe_object = $einsatzListe_object;
+    }
+
+    public function setStreckeListe_object($streckeListe_object) {
+        $this->streckeListe_object = $streckeListe_object;
+    }
+
     public function getID() {
         return $this->ID;
     }
@@ -349,6 +521,18 @@ class User { // TODO global gescheites fehlerhandling dazu rückgaben von mysql_
 
     public function getUnterweisungListe_object() {
         return $this->unterweisungListe_object;
+    }
+
+    public function getUebungListe_object() {
+        return $this->uebungListe_object;
+    }
+
+    public function getEinsatzListe_object() {
+        return $this->einsatzListe_object;
+    }
+
+    public function getStreckeListe_object() {
+        return $this->streckeListe_object;
     }
 
 }
