@@ -16,7 +16,7 @@ require_once('StreckeListe.php');
  * Description of User
  *
  * @author Warken Andreas
- * @version alpha
+ * @version 1.0 Beta
  * 
  */
 class User { // TODO sqls hier was bedeutet der Punkt in den Statements
