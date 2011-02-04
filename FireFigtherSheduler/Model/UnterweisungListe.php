@@ -3,6 +3,7 @@
 require_once('../Configuration/ExceptionText.php');
 require_once('../Configuration/Config.php');
 require_once('Unterweisung.php');
+require_once('FFSException.php');
 
 /**
  * Description of UnterweisungListe
@@ -32,26 +33,29 @@ class UnterweisungListe {
      * @return UnterweisungListe
      */
     public static function load($UserID) {
-
-        $sql = "SELECT * FROM r_unterweisungUser
+        if (is_numeric($UserID)) {
+            $sql = "SELECT * FROM r_unterweisungUser
             INNER JOIN unterweisung
             ON r_unterweisungUser.unterweisung_ID = unterweisung.ID
-            WHERE user_ID = $UserID
-            ORDER BY datum DESC";
+            WHERE user_ID = '$UserID'
+            ORDER BY datum DESC;";
 
-        $dbConnector = DbConnector::getInstance();
-        $result = $dbConnector->execute_sql($sql);
+            $dbConnector = DbConnector::getInstance();
+            $result = $dbConnector->execute_sql($sql);
 
-        if (mysql_num_rows($result) > 0) {// wenn mehr als 0 eintraege
-            $unterweisungsliste = new UnterweisungListe;
+            if (mysql_num_rows($result) > 0) {// wenn mehr als 0 eintraege
+                $unterweisungsliste = new UnterweisungListe;
 
-            while ($row = mysql_fetch_array($result)) { //sequentielles durchgehen der zeilen
-                $unterweisungsliste->append_unterweisung(
-                        Unterweisung::parse_result_as_objekt($row));
+                while ($row = mysql_fetch_array($result)) { //sequentielles durchgehen der zeilen
+                    $unterweisungsliste->append_unterweisung(
+                            Unterweisung::parse_result_as_objekt($row));
+                }
+                return $unterweisungsliste;
+            } else {
+                throw new FFSException(ExceptionText::unterweisungListe_no_unterweisung());
             }
-            return $unterweisungsliste;
         } else {
-            throw new FFSException(ExceptionText::unterweisungListe_no_unterweisung());
+            throw new FFSException(ExceptionText::user_ID_not_numeric());
         }
     }
 

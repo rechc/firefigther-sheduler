@@ -59,6 +59,9 @@ class Config {
         return 60;
     }
 
+    public static function uebung_warning_yellow(){
+        return 60;
+    }
     
 
     /**
