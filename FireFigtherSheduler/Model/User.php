@@ -228,16 +228,55 @@ class User { // TODO sqls hier was bedeutet der Punkt in den Statements
 
     /**
      * get_warning_status
-     * @return a String-Value: red, yellow or green
+     * 
+     * Rot wenn
+     * G26.3 Untersuchung abgelaufen ODER
+     * Einsatz UND Einsatzübung älter als 365 Tage ODER
+     * Belastungsstrecke älter als 365 Tage
+     * 
+     * @return <type> integer, siehe Config.php 
      */
     public function get_warning_status() {
-        // TODO implement
-        /* Rot wenn
-          G26.3 Untersuchung abgelaufen ODER
-          Einsatz UND Einsatzübung älter als 365 Tage ODER
-          Belastungsstrecke älter als 365 Tage */
+        // TODO implement UNTERWEISUNG in warnings 
+        $warning = 0;
 
-        return "green";
+
+        if (($this->g26_object == NULL) or
+                (($this->einsatzListe_object == NULL) and ($this->uebungListe_object == NULL))
+                or ($this->streckeListe_object == NULL)) {
+            return Config::red(); // wenn Bedingung komplett fehlt
+        }
+
+        if ($this->einsatzListe_object == NULL) {
+            $einsatzWarning = Config::yellow();
+        } else {
+            $einsatzWarning = $this->einsatzListe_object->get_warning_status();
+        }
+
+        if ($this->uebungListe_object == NULL) {
+            $uebungWarning = Config::yellow();
+        } else {
+            $uebungWarning = $this->uebungListe_object->get_warning_status();
+        }
+
+        // so nun sollte es weiter keine "Nullpointer" mehr geben
+        
+        $g26Warning = $this->g26_object->get_warning_status();
+        $streckeWarning = $this->streckeListe_object->get_warning_status();
+
+        if (($g26Warning == Config::red()) or
+                (($einsatzWarning == Config::red()) and ($uebungWarning == Config::red()))
+                or ($streckeWarning == Config::red())) {
+            return Config::red();
+        }
+
+        if (($g26Warning == Config::yellow()) or
+                (($einsatzWarning == Config::yellow()) and ($uebungWarning == Config::yellow()))
+                or ($streckeWarning == Config::yellow())) {
+            return Config::yellow();
+        } else {
+            return Config::green();
+        }
     }
 
     /**
@@ -296,8 +335,8 @@ class User { // TODO sqls hier was bedeutet der Punkt in den Statements
      * wem was nicht an der Ausgabe gefaellt, schoener machen ohne zu fragen
      * @deprecated !
      */
-    public function debug_output_full_user(){
-        echo  '<h3>',"User:"  ,'</h3>', '<br>';
+    public function debug_output_full_user() {
+        echo '<h3>', "User:", '</h3>', '<br>';
         echo "Email: ", $this->getEmail(), '<br>';
         echo "Name: ", $this->getName(), '<br>';
         echo "Vorname: ", $this->getVorname(), '<br>';
@@ -308,19 +347,19 @@ class User { // TODO sqls hier was bedeutet der Punkt in den Statements
         echo "Rollen_ID: ", $this->getRollen_ID(), '<br>';
         echo "Warning Status: ", $this->get_warning_status(), '<br>';
 
-        echo  '<h3>',"G26:"  ,'</h3>', '<br>';
+        echo '<h3>', "G26:", '</h3>', '<br>';
         $g26 = $this->getG26_object();
         if ($g26 != NULL) {
-            echo "GDatum: ",$g26->getDatum(), '<br>';
-            echo "GGueltigBis: ",$g26->getGueltigBis(), '<br>';
-            echo "GID: ",$g26->getID(), '<br>';
-            echo "GUserID: ",$g26->getUserID(), '<br>';
-            echo "Gwarning_status: ",$g26->get_warning_status(), '<br>';
+            echo "GDatum: ", $g26->getDatum(), '<br>';
+            echo "GGueltigBis: ", $g26->getGueltigBis(), '<br>';
+            echo "GID: ", $g26->getID(), '<br>';
+            echo "GUserID: ", $g26->getUserID(), '<br>';
+            echo "Gwarning_status: ", $g26->get_warning_status(), '<br>';
         } else {
-            echo "G26 null",'<br>';
+            echo "G26 null", '<br>';
         }
 
-        echo  '<h3>',"Unterweisungen:"  ,'</h3>', '<br>';
+        echo '<h3>', "Unterweisungen:", '</h3>', '<br>';
 
         $uwlist = $this->getUnterweisungListe_object();
         if ($uwlist != NULL) {
@@ -328,18 +367,18 @@ class User { // TODO sqls hier was bedeutet der Punkt in den Statements
             $uwarray = $uwlist->getUnterweisung_array();
             foreach ($uwarray as $uwarray_entry) {
                 echo "NEXT", '<br>';
-                echo "UOrt: ",$uwarray_entry->getOrt(), '<br>';
-                echo "UDatum: ",$uwarray_entry->getDatum(), '<br>';
-                echo "UID: ",$uwarray_entry->getID(), '<br>';
-                echo "UVerantID: ",$uwarray_entry->getVerantID(), '<br>';
-                echo "Uwarning_status: ",$uwarray_entry->get_warning_status(), '<br>';
+                echo "UOrt: ", $uwarray_entry->getOrt(), '<br>';
+                echo "UDatum: ", $uwarray_entry->getDatum(), '<br>';
+                echo "UID: ", $uwarray_entry->getID(), '<br>';
+                echo "UVerantID: ", $uwarray_entry->getVerantID(), '<br>';
+                echo "Uwarning_status: ", $uwarray_entry->get_warning_status(), '<br>';
                 echo '<br>';
             }
         } else {
-            echo "Unterweisung null",'<br>';
+            echo "Unterweisung null", '<br>';
         }
 
-        echo  '<h3>',"Uebungen:"  ,'</h3>', '<br>';
+        echo '<h3>', "Uebungen:", '</h3>', '<br>';
 
         $ublist = $this->getUebungListe_object();
         if ($ublist != NULL) {
@@ -347,17 +386,17 @@ class User { // TODO sqls hier was bedeutet der Punkt in den Statements
             $ubarray = $ublist->getUebung_array();
             foreach ($ubarray as $ubarray_entry) {
                 echo "NEXT", '<br>';
-                echo "UbOrt: ",$ubarray_entry->getOrt(), '<br>';
-                echo "UbDatum: ",$ubarray_entry->getDatum(), '<br>';
-                echo "UbID: ",$ubarray_entry->getID(), '<br>';
-                echo "Ubwarning_status: ",$ubarray_entry->get_warning_status(), '<br>';
+                echo "UbOrt: ", $ubarray_entry->getOrt(), '<br>';
+                echo "UbDatum: ", $ubarray_entry->getDatum(), '<br>';
+                echo "UbID: ", $ubarray_entry->getID(), '<br>';
+                echo "Ubwarning_status: ", $ubarray_entry->get_warning_status(), '<br>';
                 echo '<br>';
             }
         } else {
-            echo "Uebung null",'<br>';
+            echo "Uebung null", '<br>';
         }
 
-        echo  '<h3>',"Strecke:"  ,'</h3>', '<br>';
+        echo '<h3>', "Strecke:", '</h3>', '<br>';
 
         $stlist = $this->getStreckeListe_object();
         if ($stlist != NULL) {
@@ -365,17 +404,17 @@ class User { // TODO sqls hier was bedeutet der Punkt in den Statements
             $starray = $stlist->getStrecke_array();
             foreach ($starray as $starray_entry) {
                 echo "NEXT", '<br>';
-                echo "StOrt: ",$starray_entry->getOrt(), '<br>';
-                echo "StDatum: ",$starray_entry->getDatum(), '<br>';
-                echo "StID: ",$starray_entry->getID(), '<br>';
-                echo "Stwarning_status: ",$starray_entry->get_warning_status(), '<br>';
+                echo "StOrt: ", $starray_entry->getOrt(), '<br>';
+                echo "StDatum: ", $starray_entry->getDatum(), '<br>';
+                echo "StID: ", $starray_entry->getID(), '<br>';
+                echo "Stwarning_status: ", $starray_entry->get_warning_status(), '<br>';
                 echo '<br>';
             }
         } else {
-            echo "Strecke null",'<br>';
+            echo "Strecke null", '<br>';
         }
 
-        echo  '<h3>',"Einsatz:"  ,'</h3>', '<br>';
+        echo '<h3>', "Einsatz:", '</h3>', '<br>';
 
         $elist = $this->getEinsatzListe_object();
         if ($elist != NULL) {
@@ -383,35 +422,15 @@ class User { // TODO sqls hier was bedeutet der Punkt in den Statements
             $earray = $elist->getEinsatz_array();
             foreach ($earray as $earray_entry) {
                 echo "NEXT", '<br>';
-                echo "EOrt: ",$earray_entry->getOrt(), '<br>';
-                echo "EDatum: ",$earray_entry->getDatum(), '<br>';
-                echo "EID: ",$earray_entry->getID(), '<br>';
-                echo "Ewarning_status: ",$earray_entry->get_warning_status(), '<br>';
+                echo "EOrt: ", $earray_entry->getOrt(), '<br>';
+                echo "EDatum: ", $earray_entry->getDatum(), '<br>';
+                echo "EID: ", $earray_entry->getID(), '<br>';
+                echo "Ewarning_status: ", $earray_entry->get_warning_status(), '<br>';
                 echo '<br>';
             }
         } else {
-            echo "Einsatz null",'<br>';
+            echo "Einsatz null", '<br>';
         }
-
-
-        /*
-
-        echo "<br>";
-        echo '<br>', "unterweisung: ", '<br>';
-        $uwlist = $user->getUnterweisungListe_object();
-        echo "warning", $uwlist->get_warning_status(), '<br>';
-
-        $array = $uwlist->getUnterweisung_array();
-        if ($array[0] != NULL) {
-
-        } else {
-            echo "eintrag eins geleich null ", '<br>';
-        }
-
-        foreach ($array as $array_entry) {
-            echo $array_entry->getOrt(), '<br>';
-            echo $array_entry->getDatum(), '<br>';
-        }*/
     }
 
     // ---------------- Down setter and getter ----------------
