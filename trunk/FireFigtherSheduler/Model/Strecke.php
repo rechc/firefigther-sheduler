@@ -137,9 +137,9 @@ class Strecke {
                         (int) substr($this->datum, 8, 2),
                         (int) substr($this->datum, 0, 4));
         $date_difference = floor(($datum_formated - $timestamp) / 86400);
-        if ($date_difference < 0) {
+        if ($date_difference < Config::last_strecke()) {
             return Config::red();
-        } elseif ($date_difference < Config::strecke_warning_yellow()) {
+        } elseif ($date_difference < (Config::last_strecke()+Config::strecke_warning_yellow())) {
             return Config::yellow();
         } else {
             return Config::green();

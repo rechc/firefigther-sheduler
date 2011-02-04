@@ -37,8 +37,8 @@ class Config {
      * max Zeitabstand zur letzten Einsatzübung
      * @return Anzahl Tage
      */
-    public static function last_assignment_course(){
-        return 356;
+    public static function last_uebung(){
+        return -365;
     }
 
     /**
@@ -46,8 +46,12 @@ class Config {
      * max Zeitabstand zum letzten Einsatz
      * @return Anzahl Tage
      */
-    public static function last_assignment(){
-        return 356;
+    public static function last_einsatz(){
+        return -365;
+    }
+
+    public static function last_strecke(){
+        return -365;
     }
 
 
@@ -60,6 +64,10 @@ class Config {
     }
 
     public static function uebung_warning_yellow(){
+        return 60;
+    }
+
+    public static function einsatz_warning_yellow(){
         return 60;
     }
 
