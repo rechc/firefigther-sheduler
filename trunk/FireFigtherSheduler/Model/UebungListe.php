@@ -1,5 +1,10 @@
 <?php
 
+require_once('../Configuration/ExceptionText.php');
+require_once('../Configuration/Config.php');
+require_once('Uebung.php');
+require_once('FFSException.php');
+
 /**
  * Description of UebungListe
  * realisiert die m zu n Beziehung zwischen User und Uebung
@@ -30,8 +35,8 @@ class UebungListe {
     public static function load($UserID) {
         if (is_numeric($UserID)) {
             $sql = "SELECT * FROM r_uebungUser
-            INNER JOIN unterweisung
-            ON r_unterweisungUser.unterweisung_ID = unterweisung.ID
+            INNER JOIN uebung
+            ON r_uebungUser.uebung_ID = uebung.ID
             WHERE user_ID = '$UserID'
             ORDER BY datum DESC;";
 
@@ -39,15 +44,15 @@ class UebungListe {
             $result = $dbConnector->execute_sql($sql);
 
             if (mysql_num_rows($result) > 0) {// wenn mehr als 0 eintraege
-                $unterweisungsliste = new UnterweisungListe;
+                $uebungliste = new UebungListe;
 
                 while ($row = mysql_fetch_array($result)) { //sequentielles durchgehen der zeilen
-                    $unterweisungsliste->append_unterweisung(
-                            Unterweisung::parse_result_as_objekt($row));
+                    $uebungliste->append_uebung(
+                            Uebung::parse_result_as_objekt($row));
                 }
-                return $unterweisungsliste;
+                return $uebungliste;
             } else {
-                throw new FFSException(ExceptionText::unterweisungListe_no_unterweisung());
+                throw new FFSException(ExceptionText::uebungListe_no_uebung());
             }
         } else {
             throw new FFSException(ExceptionText::user_ID_not_numeric());
@@ -55,30 +60,34 @@ class UebungListe {
     }
 
     /**
-     * append_unterweisung
-     * fuegt eine Unterweisung dem Array hinzu
+     * append_uebung
+     * fuegt eine Uebung dem Array hinzu
      *
-     * @param <type> $unterweisung
+     * @param <type> $uebung
      */
-    public function append_unterweisung($unterweisung) {
-        if (is_a($unterweisung, "Unterweisung")) {
-            $this->unterweisung_array->append($unterweisung);
+    public function append_uebung($uebung) {
+        if (is_a($uebung, "Uebung")) {
+            $this->uebung_array->append($uebung);
         } else {
-            throw new FFSException(ExceptionText::unterweisungListe_not_unterweisung());
+            throw new FFSException(ExceptionText::uebungListe_not_uebung());
         }
     }
 
     /**
      * get_warning_status
-     * liefert den Warnungsstatus des neusten Unterweisungobjektes
+     * liefert den Warnungsstatus des neusten Uebungobjektes
      * (geht von einer sortierten Liste aus)
      */
     public function get_warning_status() {
-        if (is_a($this->unterweisung_array[0], "Unterweisung")) {
-            return $this->unterweisung_array[0]->get_warning_status();
+        if (is_a($this->uebung_array[0], "Uebung")) {
+            return $this->uebung_array[0]->get_warning_status();
         } else {
-            return Config::red(); // vorläufig ka ... wenn halt keine da ist
+            return Config::red(); 
         }
+    }
+
+    public function getUebung_array() {
+        return $this->uebung_array;
     }
 
 }
