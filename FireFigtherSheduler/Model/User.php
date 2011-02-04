@@ -3,6 +3,14 @@
 require_once('DbConnector.php');
 require_once('../Configuration/Config.php');
 require_once('G26.php');
+require_once('Uebung.php');
+require_once('UebungListe.php');
+require_once('Unterweisung.php');
+require_once('UnterweisungListe.php');
+require_once('Einsatz.php');
+require_once('EinsatzListe.php');
+require_once('Strecke.php');
+require_once('StreckeListe.php');
 
 /**
  * Description of User
@@ -28,6 +36,9 @@ class User { // TODO global gescheites fehlerhandling dazu rückgaben von mysql_
     // folgendes sind Objekte
     private $g26_object;
     private $unterweisungListe_object;
+    private $uebungListe_object;
+    private $einsatzListe_object;
+    private $streckeListe_object;
 
     /**
      * Standard Konstruktor
@@ -41,10 +52,13 @@ class User { // TODO global gescheites fehlerhandling dazu rückgaben von mysql_
         $this->vorname = "";
         $this->gebDat = "";
         $this->lbz_ID = 0;
-        $this->agt = "";
+        $this->agt = false;
         $this->rollen_ID = 0;
         $this->g26_object = new G26();
         $this->unterweisungListe_object = new UnterweisungListe();
+        $this->uebungListe_object = new UebungListe();
+        $this->einsatzListe_object = new EinsatzListe();
+        $this->streckeListe_object = new StreckeListe();
     }
 
     /**
