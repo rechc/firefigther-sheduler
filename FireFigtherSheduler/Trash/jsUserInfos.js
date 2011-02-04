@@ -10,6 +10,7 @@
           xmlHttp.send(null);
     }
 
+
     function HandleUserInfoResponse(response){
          var id = response.getElementsByTagName('id')[0].childNodes[0].nodeValue;
          var lastname = response.getElementsByTagName('lastname')[0].childNodes[0].nodeValue;
@@ -28,4 +29,3 @@
          document.getElementById('bday').value = bday;
 
     }
-

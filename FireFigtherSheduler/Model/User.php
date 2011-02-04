@@ -110,7 +110,6 @@ class User { // TODO global gescheites fehlerhandling dazu rückgaben von mysql_
             $user->setG26_object(G26::load($data["ID"]));
             $user->setUnterweisungListe_object(UnterweisungListe::load($data["ID"]));
 
-
             return $user;
         } else {
             return NULL;
