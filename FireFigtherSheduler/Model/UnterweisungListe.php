@@ -63,7 +63,7 @@ class UnterweisungListe {
      * append_unterweisung
      * fuegt eine Unterweisung dem Array hinzu
      *
-     * @param <type> $unterweisung
+     * @param <type> $unterweisung ein Unterweisungsobjekt
      */
     public function append_unterweisung($unterweisung) {
         if (is_a($unterweisung, "Unterweisung")) {

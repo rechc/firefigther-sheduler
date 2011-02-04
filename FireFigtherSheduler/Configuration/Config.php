@@ -62,6 +62,10 @@ class Config {
     public static function uebung_warning_yellow(){
         return 60;
     }
+
+    public static function strecke_warning_yellow(){
+        return 60;
+    }
     
 
     /**
