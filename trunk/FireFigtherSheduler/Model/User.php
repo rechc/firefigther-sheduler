@@ -1,8 +1,8 @@
 <?php
+
 require_once('DbConnector.php');
 require_once('../Configuration/Config.php');
 require_once('G26.php');
-
 
 /**
  * Description of User
@@ -23,20 +23,30 @@ class User { // TODO global gescheites fehlerhandling dazu rückgaben von mysql_
     /** LBZ ist Loeschbezirk. */
     private $lbz_ID;
     /** Agt ist Atemschutzgeraetetraeger. (boolean) */
-    private $agt; 
+    private $agt;
     private $rollen_ID;
     // folgendes sind Objekte
     private $g26_object;
     private $unterweisungListe_object;
 
-
-
     /**
      * Standard Konstruktor
+     * mit Initialisierungen
      */
-    public function __construct(){}
-    
-    
+    public function __construct() {
+        $this->ID = 0;
+        $this->email = "";
+        $this->password = "";
+        $this->name = "";
+        $this->vorname = "";
+        $this->gebDat = "";
+        $this->lbz_ID = 0;
+        $this->agt = "";
+        $this->rollen_ID = 0;
+        $this->g26_object = new G26();
+        $this->unterweisungListe_object = new Unterweisung();
+    }
+
     /**
      * get_user_by_login
      * Erfragt mittels Email und Password den Benutzer aus der DB
@@ -45,13 +55,13 @@ class User { // TODO global gescheites fehlerhandling dazu rückgaben von mysql_
      * @param <type> $password
      * @return User-Objekt or NULL
      */
-    public static function get_user_by_login($email, $password){
+    public static function get_user_by_login($email, $password) {
         // TODO validierung auf injections
         $sql = "SELECT ID, email, name, vorname, gebDat, lbz_ID, agt, rollen_ID " .
-            "FROM user " .
-            "WHERE ( email like '" . $email .
-            "' ) AND ( " .
-            "passwort = '" . $password . "')";
+                "FROM user " .
+                "WHERE ( email like '" . $email .
+                "' ) AND ( " .
+                "passwort = '" . $password . "')";
 
         $dbConnector = DbConnector::getInstance();
         $result = $dbConnector->execute_sql($sql);
@@ -59,30 +69,28 @@ class User { // TODO global gescheites fehlerhandling dazu rückgaben von mysql_
         return USER::parse_result_as_object($result);
     }
 
-
     /**
      *
      * @param <type> $ID
      * @return User 
      */
-    public static function get_user($ID){
-         $sql = "SELECT ID, email, name, vorname, gebDat, lbz_ID, agt, rollen_ID
+    public static function get_user($ID) {
+        $sql = "SELECT ID, email, name, vorname, gebDat, lbz_ID, agt, rollen_ID
              FROM user WHERE ID = " . $ID;
 
-         $dbConnector = DbConnector::getInstance();
-         $result = $dbConnector->execute_sql($sql);
+        $dbConnector = DbConnector::getInstance();
+        $result = $dbConnector->execute_sql($sql);
 
-         return USER::parse_result_as_object($result);
+        return USER::parse_result_as_object($result);
     }
 
-    
     /**
      * parse_result_as_object
      * weist die Daten aus der DB einem UserObjekt zu und liefert dies zurueck
      * @param <type> $result
      * @return User
      */
-    private static function parse_result_as_object($result){
+    private static function parse_result_as_object($result) {
         if (mysql_num_rows($result) > 0) {
             // Benutzerdaten in ein Array auslesen.
             $data = mysql_fetch_array($result);
@@ -90,7 +98,7 @@ class User { // TODO global gescheites fehlerhandling dazu rückgaben von mysql_
             $user = new User();
             $user->setID($data["ID"]);
             $user->setEmail($data["email"]);
-           // $user->setPassword($data["password"]);
+            // $user->setPassword($data["password"]);
             $user->setName($data["name"]);
             $user->setVorname($data["vorname"]);
             $user->setGebDat($data["gebDat"]);
@@ -104,19 +112,17 @@ class User { // TODO global gescheites fehlerhandling dazu rückgaben von mysql_
 
 
             return $user;
-        }else {
+        } else {
             return NULL;
         }
-
     }
-
 
     /**
      * save_without_pw
      * speichert Änderungen am User Objekt, ohne Berücksichtigung des Passworts
      * ohne abhaengig Tabellen wie G26
      */
-    public function save_without_pw(){
+    public function save_without_pw() {
         //kann fehlschlagen falls benutzer gelöscht wurde -> handling
         $sql = "UPDATE user
             SET email = '$this->email', name = '$this->name',
@@ -129,14 +135,13 @@ class User { // TODO global gescheites fehlerhandling dazu rückgaben von mysql_
         $result = $dbConnector->execute_sql($sql);
     }
 
-
     /**
      * save_pw
      * speichert ein neues Passwort
      * ohne abhaengig Tabellen wie G26
      */
-    public function save_pw(){
-         //kann fehlschlagen falls benutzer gelöscht wurde -> handling
+    public function save_pw() {
+        //kann fehlschlagen falls benutzer gelöscht wurde -> handling
         $sql = "UPDATE user
             SET password = '$this->password'
             WHERE ID = '$this->ID'";
@@ -145,15 +150,14 @@ class User { // TODO global gescheites fehlerhandling dazu rückgaben von mysql_
         $result = $dbConnector->execute_sql($sql);
     }
 
-
     /**
      * create_db_entry
      * erstellt einen neuen Eintrag mit dem aktuellen Benutzer
      *
      */
-    public function create_db_entry(){
+    public function create_db_entry() {
         //TODO missing lbz und agt, festellung kein uniqueness der email
-        $sql= "INSERT INTO user ( name, vorname, email,  passwort , rollen_ID,
+        $sql = "INSERT INTO user ( name, vorname, email,  passwort , rollen_ID,
             gebDat)
         VALUES ( '$this->name', '$this->vorname', '$this->email',
                 '$this->password', '$this->rollen_ID', '$this->gebDat' )";
@@ -162,87 +166,84 @@ class User { // TODO global gescheites fehlerhandling dazu rückgaben von mysql_
         $result = $dbConnector->execute_sql($sql);
     }
 
+    public function delete_with_dependencys() {
 
-    public function delete_with_dependencys(){}
+    }
 
     // nur die abhaengigkeiten werden gelöscht also die m-n tables nicht aber die listen objekte
     // die 1zun werden direkt gelöscht
     // die m-n objekte werden manuell gelöscht das ein abhaengiges loeschen sehr unwahrscheinlich ist und diese listen sowieso gepflegt werden
-    private function delete_dependencys(){}
-
+    private function delete_dependencys() {
+        
+    }
 
     /**
      * get_warning_status
      * @return a String-Value: red, yellow or green
      */
-    public function get_warning_status(){
+    public function get_warning_status() {
         // TODO implement
-        /*Rot wenn
-G26.3 Untersuchung abgelaufen ODER
-Einsatz UND Einsatzübung älter als 365 Tage ODER
-Belastungsstrecke älter als 365 Tage*/
-  
+        /* Rot wenn
+          G26.3 Untersuchung abgelaufen ODER
+          Einsatz UND Einsatzübung älter als 365 Tage ODER
+          Belastungsstrecke älter als 365 Tage */
+
         return "green";
     }
-
 
     /**
      * is_admin
      * @return boolean
      */
-    public function is_admin(){
-        if ($this->rollen_ID == Config::admin_role_id()){ 
+    public function is_admin() {
+        if ($this->rollen_ID == Config::admin_role_id()) {
             return true;
         }
         return false;
     }
-
 
     /**
      * is_agw
      * @return boolean
      */
-    public function is_agw(){
-        if ($this->rollen_ID == Config::agw_role_id()){
+    public function is_agw() {
+        if ($this->rollen_ID == Config::agw_role_id()) {
             return true;
         }
         return false;
     }
-
 
     /**
      * is_manager
      * @return boolean
      */
-    public function is_manager(){
-        if ($this->rollen_ID == Config::manager_role_id()){
+    public function is_manager() {
+        if ($this->rollen_ID == Config::manager_role_id()) {
             return true;
         }
         return false;
     }
-    
 
     /**
      * is_member
      * @return boolean
      */
-    public function is_member(){
-        if ($this->rollen_ID == Config::member_role_id()){
+    public function is_member() {
+        if ($this->rollen_ID == Config::member_role_id()) {
             return true;
         }
         return false;
     }
 
-    public static function deleteUser($ID){
-        $sql = "DELETE FROM user WHERE id=".$ID;
+    public static function deleteUser($ID) {
+        $sql = "DELETE FROM user WHERE id=" . $ID;
         $dbConnector = DbConnector::getInstance();
         $result = $dbConnector->execute_sql($sql);
     }
 
     // ---------------- Down setter and getter ----------------
     // auto über alt+einfg  // geht anscheind nicht übers kontextmenü wie bei
-    // java projekten, ps: plz stil beibehalten setter dann getter 
-
+    // java projekten, ps: plz stil beibehalten setter dann getter
     // TODO validierung feldlänge , numerical etc.
 
     public function setID($ID) {
@@ -282,17 +283,16 @@ Belastungsstrecke älter als 365 Tage*/
     }
 
     public function setG26_object($g26_object) {
-        if (is_a($g26_object, 'G26')){
+        if (is_a($g26_object, 'G26')) {
             $this->g26_object = $g26_object;
-        }else{
+        } else {
             //fehlerhandling
-        }   
+        }
     }
 
     public function setUnterweisungListe_object($unterweisungListe_object) {
         $this->unterweisungListe_object = $unterweisungListe_object;
     }
-
 
     public function getID() {
         return $this->ID;
@@ -337,8 +337,6 @@ Belastungsstrecke älter als 365 Tage*/
     public function getUnterweisungListe_object() {
         return $this->unterweisungListe_object;
     }
-
-
 
 }
 
