@@ -5,12 +5,12 @@ require_once('../Model/UnterweisungListe.php');
 function laden(){
     try {
         $unterw =  Unterweisung::load(1);
-    echo $unterw->getID() , '<br>';
-    echo $unterw->getOrt() , '<br>';
-    echo $unterw->getDatum() , '<br>';
-    echo $unterw->getVerantID() , '<br>';
+        echo $unterw->getID() , '<br>';
+        echo $unterw->getOrt() , '<br>';
+        echo $unterw->getDatum() , '<br>';
+        echo $unterw->getVerantID() , '<br>';
 
-    } catch (Exception $exc) {
+    } catch (FFSException $exc) {
         echo "sds";
     }
 

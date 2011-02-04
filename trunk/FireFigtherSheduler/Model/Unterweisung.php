@@ -34,19 +34,23 @@ class Unterweisung {
      * @return Unterweisungs Objekt
      */
     public static function load($ID) {
-        $sql = "SELECT *
+        if (is_numeric($ID)) {
+            $sql = "SELECT *
             FROM unterweisung
-            WHERE ID = $ID ";
+            WHERE ID = '$ID' ;";
 
-        $dbConnector = DbConnector::getInstance();
-        $result = $dbConnector->execute_sql($sql);
+            $dbConnector = DbConnector::getInstance();
+            $result = $dbConnector->execute_sql($sql);
 
-        if (mysql_num_rows($result) > 0) {
-            $data = mysql_fetch_array($result);
+            if (mysql_num_rows($result) > 0) {
+                $data = mysql_fetch_array($result);
 
-            return Unterweisung::parse_result_as_objekt($data);
+                return Unterweisung::parse_result_as_objekt($data);
+            } else {
+                throw new FFSException(ExceptionText::unterweisung_not_found());
+            }
         } else {
-            throw new FFSException(ExceptionText::unterweisung_not_found());
+            throw new FFSException(ExceptionText::unterweisung_ID_not_numeric());
         }
     }
 
@@ -76,7 +80,7 @@ class Unterweisung {
                 $sql = "UPDATE unterweisung
                 SET ort = '$this->ort', datum = '$this->datum',
                     verantID = '$this->verantID'
-                WHERE ID = '$this->ID'";
+                WHERE ID = '$this->ID';";
 
                 $dbConnector = DbConnector::getInstance();
                 $result = $dbConnector->execute_sql($sql);
@@ -96,7 +100,7 @@ class Unterweisung {
         if ($this->ort != NULL) {
             if ($this->datum != NULL) {
                 $sql = "INSERT INTO unterweisung ( ort, datum, verantID)
-                    VALUES ( '$this->ort', '$this->datum', '$this->verantID' )";
+                    VALUES ( '$this->ort', '$this->datum', '$this->verantID' );";
 
                 $dbConnector = DbConnector::getInstance();
                 $result = $dbConnector->execute_sql($sql);
@@ -104,7 +108,7 @@ class Unterweisung {
                 throw new FFSException(ExceptionText::unterweisung_no_date());
             }
         } else {
-            throw new FFSException(ExceptionText::unterweisung_no_date());
+            throw new FFSException(ExceptionText::unterweisung_no_location());
         }
     }
 
@@ -114,13 +118,13 @@ class Unterweisung {
      */
     public function delete_with_dependencys() {
         $sql = "DELETE FROM unterweisung
-        WHERE ID = '$this->ID'";
+        WHERE ID = '$this->ID';";
         $dbConnector = DbConnector::getInstance();
         $result = $dbConnector->execute_sql($sql);
 
         // dependencys
         $sql = "DELETE FROM r_unterweisungUser
-        WHERE unterweisung_ID = '$this->ID'";
+        WHERE unterweisung_ID = '$this->ID';";
         $result = $dbConnector->execute_sql($sql);
     }
 
