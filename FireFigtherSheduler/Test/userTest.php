@@ -70,7 +70,7 @@ function testusrg26(){
 try {
     testusrg26();
 } catch (Exception $exc) {
-    echo "dsfdhsjkfhsdl";
+    echo $exc;
 }
 
 
