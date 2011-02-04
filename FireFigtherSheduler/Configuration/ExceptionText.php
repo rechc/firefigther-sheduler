@@ -68,7 +68,15 @@ class ExceptionText {
     }
 
     //
+    public static function uebungListe_no_uebung() {
+        return "Zu dem angegebenen Benutzer wurde keine Uebung gefunden";
+    }
 
+    public static function uebungListe_not_uebung() {
+        return "Das zugewiesene Objekt ist nicht vom Typ Uebung";
+    }
+
+    //
 
     public static function user_ID_not_numeric() {
         return "Die ID vom User muss ein numerischer Wert sein";
