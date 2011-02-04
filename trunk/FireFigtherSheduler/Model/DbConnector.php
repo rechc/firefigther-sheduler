@@ -4,8 +4,8 @@ require_once('../Configuration/Config.php');
 /**
  * Description of DbConnector
  *
- * @author Warken Andreas
- * @version 1
+ * @author Warken Andreas, Rech Christian
+ * @version 1.0
  */
 class DbConnector {
  

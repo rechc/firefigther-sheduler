@@ -1,15 +1,14 @@
 <?php
-/* 
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 /**
  * Description of FFSException
+ * Exceptionklasse fuer die komplette Anwendung,
+ * zur Unterscheidung von anderen Exceptions
  *
- * @author awagen
+ * @author Warken Andreas
+ * @version 1.0
  */
 class FFSException extends Exception{
-    //put your code here
+
 }
 ?>
