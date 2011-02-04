@@ -5,11 +5,11 @@ require_once('../Configuration/Config.php');
  * Description of DbConnector
  *
  * @author Warken Andreas
- * @version beta
+ * @version 1
  */
 class DbConnector {
  
-    private static $singletonInstance = null;
+    private static $singletonInstance = NULL;
     private $connectionid;
     
 
@@ -34,7 +34,7 @@ class DbConnector {
      * @return DbConnector-Objekt
      */
     public static function getInstance(){
-        if(self::$singletonInstance == null)
+        if(self::$singletonInstance == NULL)
       {
          self::$singletonInstance = new DbConnector();
       }

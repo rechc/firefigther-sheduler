@@ -1,34 +1,40 @@
 <?php
+
 require_once('DbConnector.php');
 require_once('../Configuration/Config.php');
+require_once('FFSException.php');
+require_once('../Configuration/ExceptionText.php');
 
 /**
  * Description of Unterweisung
+ * Die Klasse stellt Daten einer Unterweisung bereit und
+ * handhabt alle dazugehoerigen Funktionen.
  *
  * @author Warken Andreas
- * @version alpha+
+ * @version 0.9
  */
 class Unterweisung {
+
     private $ID;
     private $ort;
     private $datum;
     private $verantID;
 
-
     /**
      * Standard Konstruktor
      */
-    public function __construct(){}
-
+    public function __construct() {
+        
+    }
 
     /**
      * load
      * laed das Objekt aus der DB anhand seiner ID
-     * @param <type> $ID
-     * @return Unterweisung Objekt or NULL
+     * @param <type> $ID Die Id des Datenbankeintrags
+     * @return Unterweisungs Objekt
      */
-    public static function load($ID){
-        $sql="SELECT *
+    public static function load($ID) {
+        $sql = "SELECT *
             FROM unterweisung
             WHERE ID = $ID ";
 
@@ -38,63 +44,75 @@ class Unterweisung {
         if (mysql_num_rows($result) > 0) {
             $data = mysql_fetch_array($result);
 
-            $unterweisung = new Unterweisung();
-            $unterweisung->setID($data["ID"]);
-            $unterweisung->setOrt($data["ort"]);
-            $unterweisung->setDatum($data["datum"]);
-            $unterweisung->setVerantID($data["verantID"]);
-
-            return $unterweisung;
-        }else{
-            return NULL;
-        }   
+            return Unterweisung::parse_result_as_objekt($data);
+        } else {
+            throw new FFSException(ExceptionText::unterweisung_not_found());
+        }
     }
 
-    public static function parse_result_as_objekt($row){
-         $unterweisung = new Unterweisung();
-         $unterweisung->setID($row["ID"]);
-         $unterweisung->setOrt($row["ort"]);
-         $unterweisung->setDatum($row["datum"]);
-         $unterweisung->setVerantID($row["verantID"]);
-         return $unterweisung;
+    /**
+     * parse_result_as_objekt
+     * erstellt aus einer Datenbankzeile ein Objekt der Klasse
+     *
+     * @param <type> $row DB-row
+     * @return Unterweisungs Objekt
+     */
+    public static function parse_result_as_objekt($row) {
+        $unterweisung = new Unterweisung();
+        $unterweisung->setID($row["ID"]);
+        $unterweisung->setOrt($row["ort"]);
+        $unterweisung->setDatum($row["datum"]);
+        $unterweisung->setVerantID($row["verantID"]);
+        return $unterweisung;
     }
 
-    
     /**
      * save
      * speichert das Objekt anhand seiner ID
      */
-    public function save(){
-        //kann fehlschlagen falls gelöscht wurde -> handling
-        $sql = "UPDATE unterweisung
-            SET ort = '$this->ort', datum = '$this->datum',
-                verantID = '$this->verantID'
-            WHERE ID = '$this->ID'";
+    public function save() {
+        if ($this->ort != NULL) {
+            if ($this->datum != NULL) {
+                $sql = "UPDATE unterweisung
+                SET ort = '$this->ort', datum = '$this->datum',
+                    verantID = '$this->verantID'
+                WHERE ID = '$this->ID'";
 
-        $dbConnector = DbConnector::getInstance();
-        $result = $dbConnector->execute_sql($sql);
+                $dbConnector = DbConnector::getInstance();
+                $result = $dbConnector->execute_sql($sql);
+            } else {
+                throw new FFSException(ExceptionText::unterweisung_no_date());
+            }
+        } else {
+            throw new FFSException(ExceptionText::unterweisung_no_date());
+        }
     }
-
 
     /**
      * create_db_entry
      * legt ein neues Objekt mit seinen Parametern an
      */
-     public function create_db_entry(){
-        //aktuell gibt es keine Prüfung ab alle Daten im Objekt vorhanden sind
-        $sql= "INSERT INTO unterweisung ( ort, datum, verantID)
-            VALUES ( '$this->ort', '$this->datum', '$this->verantID' )";
+    public function create_db_entry() {
+        if ($this->ort != NULL) {
+            if ($this->datum != NULL) {
+                $sql = "INSERT INTO unterweisung ( ort, datum, verantID)
+                    VALUES ( '$this->ort', '$this->datum', '$this->verantID' )";
 
-        $dbConnector = DbConnector::getInstance();
-        $result = $dbConnector->execute_sql($sql);
-     }
+                $dbConnector = DbConnector::getInstance();
+                $result = $dbConnector->execute_sql($sql);
+            } else {
+                throw new FFSException(ExceptionText::unterweisung_no_date());
+            }
+        } else {
+            throw new FFSException(ExceptionText::unterweisung_no_date());
+        }
+    }
 
-    
-     /**
-      * delete_with_dependencys
-      * loescht das Objekt mit den Abhaengigkeiten zu den Benutzern
-      */
-    public function delete_with_dependencys(){
+    /**
+     * delete_with_dependencys
+     * loescht das Objekt mit den Abhaengigkeiten zu den Benutzern
+     */
+    public function delete_with_dependencys() {
         $sql = "DELETE FROM unterweisung
         WHERE ID = '$this->ID'";
         $dbConnector = DbConnector::getInstance();
@@ -106,32 +124,35 @@ class Unterweisung {
         $result = $dbConnector->execute_sql($sql);
     }
 
-    
     /**
      * get_warning_status
      * prueft ob abgelaufen
      * @return <type> 
      */
-    public function get_warning_status(){
+    public function get_warning_status() {
         $timestamp = time();
-        $datum_formated =  mktime(0,0,0,
-                 (int)substr($this->datum,5,2),
-                 (int)substr($this->datum,8,2),
-                 (int)substr($this->datum,0,4));
-         $date_difference = floor(($datum_formated - $timestamp)/86400);
-        // echo $date_difference,'<br>';
-         if ($date_difference < 0){ //TODO  weis nemmer für was unterweisungsstrecke da ist, abwaerts ueberarbeiten
+        $datum_formated = mktime(0, 0, 0,
+                        (int) substr($this->datum, 5, 2),
+                        (int) substr($this->datum, 8, 2),
+                        (int) substr($this->datum, 0, 4));
+        $date_difference = floor(($datum_formated - $timestamp) / 86400);
+        if ($date_difference < 0) { //TODO  weis nemmer für was unterweisungsstrecke da ist......
             return Config::red();
-         }else{
-             return Config::green();// vorl noch ueberlegen wann gelb 30 tage vorher ? oder noch ne farbe nur fuer abgelaufen aber nicht relevant im zusammenhang
-         }
+        } elseif ($date_difference < Config::unterweisung_warning_yellow()) {
+            return Config::yellow();
+        } else {
+            return Config::green();
+        }
     }
 
-    
     // ---------------- Down setter and getter ----------------
 
     public function setID($ID) {
-        $this->ID = $ID;
+        if (is_numeric($ID)) {
+            $this->ID = $ID;
+        } else {
+            throw new FFSException(ExceptionText::unterweisung_ID_not_numeric());
+        }
     }
 
     public function setOrt($ort) {
@@ -143,7 +164,11 @@ class Unterweisung {
     }
 
     public function setVerantID($verantID) {
-        $this->verantID = $verantID;
+        if (is_numeric($verantID)) {
+            $this->verantID = $verantID;
+        } else {
+            throw new FFSException(ExceptionText::unterweisung_verantID_not_numeric());
+        }
     }
 
     public function getID() {
@@ -163,4 +188,5 @@ class Unterweisung {
     }
 
 }
+
 ?>

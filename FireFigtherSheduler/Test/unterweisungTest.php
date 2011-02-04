@@ -3,11 +3,18 @@ require_once('../Model/Unterweisung.php');
 require_once('../Model/UnterweisungListe.php');
 
 function laden(){
-    $unterw =  Unterweisung::load(1);
+    try {
+        $unterw =  Unterweisung::load(1);
     echo $unterw->getID() , '<br>';
     echo $unterw->getOrt() , '<br>';
     echo $unterw->getDatum() , '<br>';
     echo $unterw->getVerantID() , '<br>';
+
+    } catch (Exception $exc) {
+        echo "sds";
+    }
+
+    
 }
 //laden();
 
@@ -25,6 +32,7 @@ function laden_liste(){
 }
 
 
-laden_liste();
+//laden_liste();
+laden();
 
 ?>

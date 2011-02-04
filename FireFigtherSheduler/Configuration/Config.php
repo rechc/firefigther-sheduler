@@ -50,6 +50,17 @@ class Config {
         return 356;
     }
 
+
+    /**
+     * wieviel tage vor ablauf der zeit der gelbe warning status angezeigt wird
+     * @return <type>
+     */
+    public static function unterweisung_warning_yellow(){
+        return 60;
+    }
+
+    
+
     /**
      *
      * max Zeitabstand zur letzten belastungsstrecke

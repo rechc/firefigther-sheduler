@@ -5,11 +5,11 @@
  */
 
 /**
- * Description of Uebung
+ * Description of FFSException
  *
  * @author awagen
  */
-class Uebung {
-   
+class FFSException extends Exception{
+    //put your code here
 }
 ?>
