@@ -76,8 +76,6 @@ class ExceptionText {
         return "Das zugewiesene Objekt ist nicht vom Typ Uebung";
     }
 
-
-
     //strecke
     public static function strecke_not_found() {
         return "Es wurde keine Strecke zu den angegebenen Paramtern gefunden";
@@ -130,11 +128,35 @@ class ExceptionText {
         return "Das zugewiesene Objekt ist nicht vom Typ Einsatz";
     }
 
-
-        //user
+    //user
 
     public static function user_ID_not_numeric() {
         return "Die ID vom User muss ein numerischer Wert sein";
+    }
+
+    // g26
+    public static function g26_ID_not_numeric() {
+        return "Die ID der g26 muss ein numerischer Wert sein";
+    }
+
+    public static function g26_userID_not_numeric() {
+        return "Die userID der g26 muss ein numerischer Wert sein";
+    }
+
+    public static function g26_not_found() {
+        return "Es wurde keine G26 zu den angegebenen Paramtern gefunden";
+    }
+
+    public static function g26_no_date() {
+        return "Es wurde kein Datum zu der g26 angegeben";
+    }
+
+    public static function g26_no_userID() {
+        return "Es wurde kein userID zu der g26 angegeben";
+    }
+
+    public static function g26_no_gueltigBis() {
+        return "Es wurde kein gueltigBiszu der g26 angegeben";
     }
 
 }

@@ -130,8 +130,8 @@ class Unterweisung {
 
     /**
      * get_warning_status
-     * prueft ob abgelaufen
-     * @return <type> 
+     * liefert den Warnungs-Status des Objekts
+     * @return <type> integer, siehe Config.php 
      */
     public function get_warning_status() {
         $timestamp = time();
