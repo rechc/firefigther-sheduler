@@ -44,7 +44,7 @@ class User { // TODO global gescheites fehlerhandling dazu rückgaben von mysql_
         $this->agt = "";
         $this->rollen_ID = 0;
         $this->g26_object = new G26();
-        $this->unterweisungListe_object = new Unterweisung();
+        $this->unterweisungListe_object = new UnterweisungListe();
     }
 
     /**
