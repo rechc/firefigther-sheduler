@@ -59,21 +59,22 @@ function testusrg26(){
     $password = 4711;
 
     $user = User::get_user_by_login($email, $password);
-    test_ausgabe($user);
+    $user->debug_output_full_user();
+    //test_ausgabe($user);
 }
 
 
 
 
-
+/*
  testcreate();
 testusrmanagerlist();
 try {
     testusrg26();
 } catch (Exception $exc) {
     echo $exc;
-}
-
+}*/
+testusrg26();
 
 
 

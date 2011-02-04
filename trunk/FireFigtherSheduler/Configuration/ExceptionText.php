@@ -128,11 +128,6 @@ class ExceptionText {
         return "Das zugewiesene Objekt ist nicht vom Typ Einsatz";
     }
 
-    //user
-
-    public static function user_ID_not_numeric() {
-        return "Die ID vom User muss ein numerischer Wert sein";
-    }
 
     // g26
     public static function g26_ID_not_numeric() {
@@ -159,6 +154,18 @@ class ExceptionText {
         return "Es wurde kein gueltigBiszu der g26 angegeben";
     }
 
+    //user
+
+    public static function user_ID_not_numeric() {
+        return "Die ID vom User muss ein numerischer Wert sein";
+    }
+
+     public static function user_not_found() {
+        return "Es wurde kein User zu den angegebenen Paramtern gefunden";
+    }
+    public static function user_missing_param() {
+        return "Parameter fehler zum erstellen eines db eintrags";
+    }
 }
 
 ?>

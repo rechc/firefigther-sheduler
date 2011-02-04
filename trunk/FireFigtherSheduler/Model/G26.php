@@ -35,7 +35,7 @@ class G26 {
      * @return G26-Objekt
      */
     public static function load($userID) {
-        if (is_numeric($ID)) {
+        if ((is_numeric($userID)or $userID == NULL)) {
             $sql = "SELECT *
             FROM g26
             WHERE userID = '$userID' ";
