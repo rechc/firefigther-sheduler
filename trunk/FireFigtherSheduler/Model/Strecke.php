@@ -149,7 +149,7 @@ class Strecke {
     // ---------------- Down setter and getter ----------------
 
     public function setID($ID) {
-        if (is_numeric($ID)) {
+        if ((is_numeric($ID))or ($ID == NULL)) {
             $this->ID = $ID;
         } else {
             throw new FFSException(ExceptionText::strecke_ID_not_numeric());
