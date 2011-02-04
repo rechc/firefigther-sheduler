@@ -1,5 +1,6 @@
 <?php
 require_once('../Model/User.php');
+require_once('../Model/AllUser.php');
 require_once('../Model/UnterweisungListe.php');
 require_once('../Model/Unterweisung.php');
 
@@ -45,7 +46,7 @@ function testcreate(){
 }
 
 function testusrmanagerlist(){
-    $user_array=  User::get_userarray_for_manager_view();
+    $user_array=  AllUser::get_userarray_for_manager_view();
     foreach($user_array as $user){
         test_ausgabe($user);
         echo "<br>";
@@ -64,9 +65,9 @@ function testusrg26(){
 
 
 
-//testusr();
- //testcreate();
-//testusrmanagerlist();
+
+ testcreate();
+testusrmanagerlist();
 try {
     testusrg26();
 } catch (Exception $exc) {
