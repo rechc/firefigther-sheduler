@@ -20,6 +20,7 @@ require_once('StreckeListe.php');
  * 
  */
 class User { // TODO sqls hier was bedeutet der Punkt in den Statements
+    // joins überprüfen , performance
 
     private $ID;
     private $email;
