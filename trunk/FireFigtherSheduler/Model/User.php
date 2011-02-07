@@ -21,6 +21,8 @@ require_once('StreckeListe.php');
  */
 class User { // TODO sqls hier was bedeutet der Punkt in den Statements
     // joins überprüfen , performance
+    // todo sql befehle andere sicherere , ggf schneller syntax
+    // http://php.net/manual/de/pdo.prepared-statements.php
 
     private $ID;
     private $email;
