@@ -23,7 +23,7 @@ class G26 {
     /**
      * Standard Konstruktor
      */
-    public function __construct() {
+    public function __construct() {// TODO mehrere pro user ... liste etc implementieren  1 zu n nicht 1 zu 1 
         
     }
 
